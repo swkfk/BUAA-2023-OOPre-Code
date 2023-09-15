@@ -14,13 +14,11 @@ public class GameManager {
 
         Adventurer adventurer = adventurers.get(advID);
         switch (type) {
-            // Add an adventurer
-            case 1: {
+            case OperatorLiterals.ADD_ADVENTURER: {
                 adventurers.put(advID, new Adventurer(advID, input.get(2)));
                 break;
             }
-            // Give a bottle to an adventurer
-            case 2: {
+            case OperatorLiterals.OBTAIN_BOTTLE: {
                 adventurer.obtainBottle(
                         Integer.parseInt(input.get(2)),
                         input.get(3),
@@ -28,13 +26,11 @@ public class GameManager {
                 );
                 break;
             }
-            // Remove a bottle from an adventurer
-            case 3: {
+            case OperatorLiterals.DROP_BOTTLE: {
                 adventurer.dropBottle(Integer.parseInt(input.get(2)));
                 break;
             }
-            // Give equipment to an adventurer
-            case 4: {
+            case OperatorLiterals.OBTAIN_EQUIPMENT: {
                 adventurer.obtainEquipment(
                         Integer.parseInt(input.get(2)),
                         input.get(3),
@@ -42,13 +38,11 @@ public class GameManager {
                 );
                 break;
             }
-            // Remove equipment from an adventurer
-            case 5: {
+            case OperatorLiterals.DROP_EQUIPMENT: {
                 adventurer.dropEquipment(Integer.parseInt(input.get(2)));
                 break;
             }
-            // Increase the star
-            case 6: {
+            case OperatorLiterals.STAR_UP_EQUIPMENT: {
                 adventurer.enhanceEquipment(Integer.parseInt(input.get(2)));
                 break;
             }
