@@ -18,8 +18,6 @@ public class Equipment {
     }
 
     public void enhanceStar() {
-        if (star < 2147483647) {
-            star += 1;
-        }
+        star += 1;
     }
 }
