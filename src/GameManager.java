@@ -8,6 +8,10 @@ public class GameManager {
         adventurers = new HashMap<>();
     }
 
+    public HashMap<Integer, Adventurer> getAdventurers() {
+        return adventurers;
+    }
+
     public void update(ArrayList<String> input) {
         int type = Integer.parseInt(input.get(Constants.OP_IDX_TYPE));
         int advID = Integer.parseInt(input.get(Constants.OP_IDX_ADV_ID));

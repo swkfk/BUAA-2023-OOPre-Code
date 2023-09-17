@@ -3,8 +3,18 @@ import java.util.HashMap;
 public class Adventurer {
     private int id;
     private String name;
+
     private HashMap<Integer, Bottle> bottles;
+
     private HashMap<Integer, Equipment> equipments;
+
+    public HashMap<Integer, Equipment> getEquipments() {
+        return equipments;
+    }
+
+    public HashMap<Integer, Bottle> getBottles() {
+        return bottles;
+    }
 
     public Adventurer(int id, String name) {
         this.id = id;
