@@ -50,6 +50,36 @@ public class GameManager {
                 adventurer.enhanceEquipment(Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID)));
                 break;
             }
+            case Constants.OBTAIN_FOOD: {
+                adventurer.obtainFood(
+                        Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID)),
+                        input.get(Constants.OP_IDX_OBJ_NAME),
+                        Integer.parseInt(input.get(Constants.OP_IDX_FOOD_ENERGY))
+                );
+                break;
+            }
+            case Constants.DROP_FOOD: {
+                adventurer.dropFood(Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID)));
+                break;
+            }
+            case Constants.FETCH_BOTTLE: {
+                int id = Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID));
+                String name = adventurer.getBottles().get(id).getName();
+                adventurer.getBackpack().tryAddBottle(id, name);
+                break;
+            }
+            case Constants.FETCH_EQUIPMENT: {
+                int id = Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID));
+                String name = adventurer.getEquipments().get(id).getName();
+                adventurer.getBackpack().tryAddEquipment(id, name);
+                break;
+            }
+            case Constants.FETCH_FOOD: {
+                int id = Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID));
+                String name = adventurer.getFoods().get(id).getName();
+                adventurer.getBackpack().tryAddFood(id, name);
+                break;
+            }
             default: {
             }
         }

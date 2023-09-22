@@ -6,6 +6,9 @@ public class Adventurer {
     private HashMap<Integer, Bottle> bottles;
     private HashMap<Integer, Equipment> equipments;
     private HashMap<Integer, Food> foods;
+    private Backpack backpack;
+    private int level;
+    private int power;
 
     public HashMap<Integer, Equipment> getEquipments() {
         return equipments;
@@ -15,12 +18,23 @@ public class Adventurer {
         return bottles;
     }
 
+    public HashMap<Integer, Food> getFoods() {
+        return foods;
+    }
+
+    public Backpack getBackpack() {
+        return backpack;
+    }
+
     public Adventurer(int id, String name) {
         this.id = id;
         this.name = name;
+        this.level = 1;
+        this.power = 500;
         this.bottles = new HashMap<>();
         this.equipments = new HashMap<>();
         this.foods = new HashMap<>();
+        this.backpack = new Backpack(this.level);
     }
 
     public void obtainBottle(int botID, String botName, int capacity) {
