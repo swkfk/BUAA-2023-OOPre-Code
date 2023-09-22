@@ -3,10 +3,9 @@ import java.util.HashMap;
 public class Adventurer {
     private int id;
     private String name;
-
     private HashMap<Integer, Bottle> bottles;
-
     private HashMap<Integer, Equipment> equipments;
+    private HashMap<Integer, Food> foods;
 
     public HashMap<Integer, Equipment> getEquipments() {
         return equipments;
@@ -21,6 +20,7 @@ public class Adventurer {
         this.name = name;
         this.bottles = new HashMap<>();
         this.equipments = new HashMap<>();
+        this.foods = new HashMap<>();
     }
 
     public void obtainBottle(int botID, String botName, int capacity) {
@@ -47,5 +47,15 @@ public class Adventurer {
         Equipment equipment = equipments.get(equID);
         equipment.enhanceStar();
         System.out.println(equipment.getName() + " " + equipment.getStar());
+    }
+
+    public void obtainFood(int foodID, String foodName, int foodEnergy) {
+        foods.put(foodID, new Food(foodID, foodName, foodEnergy));
+    }
+
+    public void dropFood(int foodId) {
+        String name = foods.get(foodId).getName();
+        foods.remove(foodId);
+        System.out.println(foods.size() + " " + name);
     }
 }
