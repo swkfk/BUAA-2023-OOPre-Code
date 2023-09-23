@@ -122,22 +122,21 @@ public class Adventurer {
         backpack.tryAddFood(foodID, name);
     }
 
-    public Pair<Integer, Integer> useBottle(String name) {
+    public void useBottle(String name) {
         int botId = backpack.getBottleId(name);
         if (botId == -1) {
             // Nothing to use
-            return new Pair<>(-1, 0);
+            System.out.println("fail to use " + name);
         } else {
             // use: botId, name
-            int bottleCapacity = bottles.get(botId).getCapacity();
+            int bottleCapacity = bottles.get(botId).clearCapacity();
+            this.enhancePower(bottleCapacity);
             if (bottleCapacity == 0) {
                 // remove it!
                 dropBottle(botId, false);  // from the inventory
                 backpack.useBottle(name);  // from the backpack
-                return new Pair<>(0, botId);
-            } else {
-                return new Pair<>(bottles.get(botId).clearCapacity(), botId);
             }
+            System.out.println(botId + " " + getPower());
         }
     }
 
@@ -145,15 +144,16 @@ public class Adventurer {
         power += powerUp;
     }
 
-    public Pair<Integer, Integer> useFood(String name) {
+    public void useFood(String name) {
         int foodId = backpack.getFoodId(name);
         if (foodId == -1) {
-            return new Pair<>(-1, 0);
+            System.out.println("fail to eat " + name);
         } else {
             int foodEnergy = foods.get(foodId).getEnergy();
+            this.enhanceLevel(foodEnergy);
             dropFood(foodId, false);
             backpack.useFood(name);
-            return new Pair<>(foodEnergy, foodId);
+            System.out.println(foodId + " " + getLevel());
         }
     }
 

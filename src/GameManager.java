@@ -40,26 +40,9 @@ public class GameManager {
                 update(adventurer, type, argParserSingleID(input));
                 break;
             }
-            case Constants.USE_BOTTLE: {
-                String name = argParserSingleName(input);
-                Pair<Integer, Integer> powerUp = adventurer.useBottle(name);
-                if (powerUp.getKey() == -1) {
-                    System.out.println("fail to use " + name);
-                } else {
-                    adventurer.enhancePower(powerUp.getKey());
-                    System.out.println(powerUp.getValue() + " " + adventurer.getPower());
-                }
-                break;
-            }
+            case Constants.USE_BOTTLE:
             case Constants.USE_FOOD: {
-                String name = argParserSingleName(input);
-                Pair<Integer, Integer> levelUp = adventurer.useFood(name);
-                if (levelUp.getKey() == -1) {
-                    System.out.println("fail to eat " + name);
-                } else {
-                    adventurer.enhanceLevel(levelUp.getKey());
-                    System.out.println(levelUp.getValue() + " " + adventurer.getLevel());
-                }
+                update(adventurer, type, argParserSingleName(input));
                 break;
             }
             default: {
@@ -114,6 +97,21 @@ public class GameManager {
             }
             case Constants.FETCH_FOOD: {
                 adv.fetchFood(arg);
+                break;
+            }
+            default: {
+            }
+        }
+    }
+
+    private void update(Adventurer adv, int type, String arg) {
+        switch (type) {
+            case Constants.USE_BOTTLE: {
+                adv.useBottle(arg);
+                break;
+            }
+            case Constants.USE_FOOD: {
+                adv.useFood(arg);
                 break;
             }
             default: {
