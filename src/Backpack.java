@@ -40,6 +40,30 @@ public class Backpack {
         maxBottles = levelToCapacity(level);
     }
 
+    public int getBottleId(String name) {
+        if (!bottles.containsKey(name) || bottles.get(name).isEmpty()) {
+            return -1;
+        } else {
+            return bottles.get(name).peek();  // Maybe there will be a fake warning for NPE.
+        }
+    }
+
+    public int getFoodId(String name) {
+        if (!foods.containsKey(name) || foods.get(name).isEmpty()) {
+            return -1;
+        } else {
+            return foods.get(name).peek();
+        }
+    }
+
+    public void useBottle(String name) {
+        bottles.get(name).poll();
+    }
+
+    public void useFood(String name) {
+        foods.get(name).poll();
+    }
+
     public static int levelToCapacity(int level) {
         return level / 5 + 1;
     }

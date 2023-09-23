@@ -1,3 +1,5 @@
+import javafx.util.Pair;
+
 import java.util.HashMap;
 
 public class Adventurer {
@@ -26,6 +28,14 @@ public class Adventurer {
         return backpack;
     }
 
+    public int getPower() {
+        return power;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
     public Adventurer(int id, String name) {
         this.id = id;
         this.name = name;
@@ -42,9 +52,15 @@ public class Adventurer {
     }
 
     public void dropBottle(int botID) {
+        dropBottle(botID, true);
+    }
+
+    public void dropBottle(int botID, boolean isPrint) {
         String name = bottles.get(botID).getName();
         bottles.remove(botID);
-        System.out.println(bottles.size() + " " + name);
+        if (isPrint) {
+            System.out.println(bottles.size() + " " + name);
+        }
     }
 
     public void obtainEquipment(int equId, String equName, int equStar) {
@@ -67,9 +83,55 @@ public class Adventurer {
         foods.put(foodID, new Food(foodID, foodName, foodEnergy));
     }
 
-    public void dropFood(int foodId) {
-        String name = foods.get(foodId).getName();
-        foods.remove(foodId);
-        System.out.println(foods.size() + " " + name);
+    public void dropFood(int foodID) {
+        dropFood(foodID, true);
+    }
+
+    public void dropFood(int foodID, boolean isPrint) {
+        String name = foods.get(foodID).getName();
+        foods.remove(foodID);
+        if (isPrint) {
+            System.out.println(foods.size() + " " + name);
+        }
+    }
+
+    public Pair<Integer, Integer> useBottle(String name) {
+        int botId = backpack.getBottleId(name);
+        if (botId == -1) {
+            // Nothing to use
+            return new Pair<>(-1, 0);
+        } else {
+            // use: botId, name
+            int bottleCapacity = bottles.get(botId).getCapacity();
+            if (bottleCapacity == 0) {
+                // remove it!
+                dropBottle(botId, false);  // from the inventory
+                backpack.useBottle(name);  // from the backpack
+                return new Pair<>(0, botId);
+            } else {
+                return new Pair<>(bottles.get(botId).clearCapacity(), botId);
+            }
+        }
+    }
+
+    public void enhancePower(int powerUp) {
+        power += powerUp;
+    }
+
+    public Pair<Integer, Integer> useFood(String name) {
+        int foodId = backpack.getFoodId(name);
+        if (foodId == -1) {
+            return new Pair<>(-1, 0);
+        } else {
+            int foodEnergy = foods.get(foodId).getEnergy();
+            dropFood(foodId, false);
+            backpack.useFood(name);
+            return new Pair<>(foodEnergy, foodId);
+        }
+    }
+
+    public void enhanceLevel(int up) {
+        level += up;
+        backpack.updateMaxBottles(level);
     }
 }

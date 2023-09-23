@@ -1,3 +1,5 @@
+import javafx.util.Pair;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -78,6 +80,28 @@ public class GameManager {
                 int id = Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID));
                 String name = adventurer.getFoods().get(id).getName();
                 adventurer.getBackpack().tryAddFood(id, name);
+                break;
+            }
+            case Constants.USE_BOTTLE: {
+                String name = input.get(Constants.OP_IDX_USE_OBJ_NAME);
+                Pair<Integer, Integer> powerUp = adventurer.useBottle(name);
+                if (powerUp.getKey() == -1) {
+                    System.out.println("fail to use " + name);
+                } else {
+                    adventurer.enhancePower(powerUp.getKey());
+                    System.out.println(powerUp.getValue() + " " + adventurer.getPower());
+                }
+                break;
+            }
+            case Constants.USE_FOOD: {
+                String name = input.get(Constants.OP_IDX_USE_OBJ_NAME);
+                Pair<Integer, Integer> levelUp = adventurer.useFood(name);
+                if (levelUp.getKey() == -1) {
+                    System.out.println("fail to eat " + name);
+                } else {
+                    adventurer.enhanceLevel(levelUp.getKey());
+                    System.out.println(levelUp.getValue() + " " + adventurer.getLevel());
+                }
                 break;
             }
             default: {
