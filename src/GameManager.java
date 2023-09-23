@@ -24,66 +24,24 @@ public class GameManager {
                 adventurers.put(advID, new Adventurer(advID, input.get(Constants.OP_IDX_ADV_NAME)));
                 break;
             }
-            case Constants.OBTAIN_BOTTLE: {
-                adventurer.obtainBottle(
-                        Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID)),
-                        input.get(Constants.OP_IDX_OBJ_NAME),
-                        Integer.parseInt(input.get(Constants.OP_IDX_BOT_CAP))
-                );
-                break;
-            }
-            case Constants.DROP_BOTTLE: {
-                adventurer.dropBottle(Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID)));
-                break;
-            }
-            case Constants.OBTAIN_EQUIPMENT: {
-                adventurer.obtainEquipment(
-                        Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID)),
-                        input.get(Constants.OP_IDX_OBJ_NAME),
-                        Integer.parseInt(input.get(Constants.OP_IDX_EQU_STAR))
-                );
-                break;
-            }
-            case Constants.DROP_EQUIPMENT: {
-                adventurer.dropEquipment(Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID)));
-                break;
-            }
-            case Constants.STAR_UP_EQUIPMENT: {
-                adventurer.enhanceEquipment(Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID)));
-                break;
-            }
+            case Constants.OBTAIN_BOTTLE:
+            case Constants.OBTAIN_EQUIPMENT:
             case Constants.OBTAIN_FOOD: {
-                adventurer.obtainFood(
-                        Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID)),
-                        input.get(Constants.OP_IDX_OBJ_NAME),
-                        Integer.parseInt(input.get(Constants.OP_IDX_FOOD_ENERGY))
-                );
+                update(adventurer, type, argParserObtain(input));
                 break;
             }
-            case Constants.DROP_FOOD: {
-                adventurer.dropFood(Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID)));
-                break;
-            }
-            case Constants.FETCH_BOTTLE: {
-                int id = Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID));
-                String name = adventurer.getBottles().get(id).getName();
-                adventurer.getBackpack().tryAddBottle(id, name);
-                break;
-            }
-            case Constants.FETCH_EQUIPMENT: {
-                int id = Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID));
-                String name = adventurer.getEquipments().get(id).getName();
-                adventurer.getBackpack().tryAddEquipment(id, name);
-                break;
-            }
+            case Constants.DROP_BOTTLE:
+            case Constants.DROP_EQUIPMENT:
+            case Constants.STAR_UP_EQUIPMENT:
+            case Constants.DROP_FOOD:
+            case Constants.FETCH_BOTTLE:
+            case Constants.FETCH_EQUIPMENT:
             case Constants.FETCH_FOOD: {
-                int id = Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID));
-                String name = adventurer.getFoods().get(id).getName();
-                adventurer.getBackpack().tryAddFood(id, name);
+                update(adventurer, type, argParserSingleID(input));
                 break;
             }
             case Constants.USE_BOTTLE: {
-                String name = input.get(Constants.OP_IDX_USE_OBJ_NAME);
+                String name = argParserSingleName(input);
                 Pair<Integer, Integer> powerUp = adventurer.useBottle(name);
                 if (powerUp.getKey() == -1) {
                     System.out.println("fail to use " + name);
@@ -94,7 +52,7 @@ public class GameManager {
                 break;
             }
             case Constants.USE_FOOD: {
-                String name = input.get(Constants.OP_IDX_USE_OBJ_NAME);
+                String name = argParserSingleName(input);
                 Pair<Integer, Integer> levelUp = adventurer.useFood(name);
                 if (levelUp.getKey() == -1) {
                     System.out.println("fail to eat " + name);
@@ -107,5 +65,77 @@ public class GameManager {
             default: {
             }
         }
+    }
+
+    private void update(Adventurer adv, int type, Pair<String, Pair<Integer, Integer>> args) {
+        switch (type) {
+            case Constants.OBTAIN_BOTTLE: {
+                adv.obtainBottle(args);
+                break;
+            }
+            case Constants.OBTAIN_EQUIPMENT: {
+                adv.obtainEquipment(args);
+                break;
+            }
+            case Constants.OBTAIN_FOOD: {
+                adv.obtainFood(args);
+                break;
+            }
+            default: {
+            }
+        }
+    }
+
+    private void update(Adventurer adv, int type, int arg) {
+        switch (type) {
+            case Constants.DROP_BOTTLE: {
+                adv.dropBottle(arg);
+                break;
+            }
+            case Constants.DROP_EQUIPMENT: {
+                adv.dropEquipment(arg);
+                break;
+            }
+            case Constants.STAR_UP_EQUIPMENT: {
+                adv.enhanceEquipment(arg);
+                break;
+            }
+            case Constants.DROP_FOOD: {
+                adv.dropFood(arg);
+                break;
+            }
+            case Constants.FETCH_BOTTLE: {
+                adv.fetchBottle(arg);
+                break;
+            }
+            case Constants.FETCH_EQUIPMENT: {
+                adv.fetchEquipment(arg);
+                break;
+            }
+            case Constants.FETCH_FOOD: {
+                adv.fetchFood(arg);
+                break;
+            }
+            default: {
+            }
+        }
+    }
+
+    private Pair<String, Pair<Integer, Integer>> argParserObtain(ArrayList<String> input) {
+        return new Pair<>(
+                input.get(Constants.OP_IDX_OBJ_NAME),
+                new Pair<>(
+                        Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID)),
+                        Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ATTR))
+                )
+        );
+    }
+
+    private int argParserSingleID(ArrayList<String> input) {
+        return Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID));
+    }
+
+    private String argParserSingleName(ArrayList<String> input) {
+        return input.get(Constants.OP_IDX_USE_OBJ_NAME);
     }
 }

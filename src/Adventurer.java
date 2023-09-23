@@ -47,6 +47,10 @@ public class Adventurer {
         this.backpack = new Backpack(this.level);
     }
 
+    public void obtainBottle(Pair<String, Pair<Integer, Integer>> args) {
+        obtainBottle(args.getValue().getKey(), args.getKey(), args.getValue().getValue());
+    }
+
     public void obtainBottle(int botID, String botName, int capacity) {
         bottles.put(botID, new Bottle(botID, botName, capacity));
     }
@@ -63,6 +67,15 @@ public class Adventurer {
         }
     }
 
+    public void fetchBottle(int botID) {
+        String name = bottles.get(botID).getName();
+        backpack.tryAddBottle(botID, name);
+    }
+
+    public void obtainEquipment(Pair<String, Pair<Integer, Integer>> args) {
+        obtainEquipment(args.getValue().getKey(), args.getKey(), args.getValue().getValue());
+    }
+
     public void obtainEquipment(int equId, String equName, int equStar) {
         equipments.put(equId, new Equipment(equId, equName, equStar));
     }
@@ -73,10 +86,19 @@ public class Adventurer {
         System.out.println(equipments.size() + " " + name);
     }
 
+    public void fetchEquipment(int equID) {
+        String name = equipments.get(equID).getName();
+        backpack.tryAddEquipment(equID, name);
+    }
+
     public void enhanceEquipment(int equID) {
         Equipment equipment = equipments.get(equID);
         equipment.enhanceStar();
         System.out.println(equipment.getName() + " " + equipment.getStar());
+    }
+
+    public void obtainFood(Pair<String, Pair<Integer, Integer>> args) {
+        obtainFood(args.getValue().getKey(), args.getKey(), args.getValue().getValue());
     }
 
     public void obtainFood(int foodID, String foodName, int foodEnergy) {
@@ -93,6 +115,11 @@ public class Adventurer {
         if (isPrint) {
             System.out.println(foods.size() + " " + name);
         }
+    }
+
+    public void fetchFood(int foodID) {
+        String name = foods.get(foodID).getName();
+        backpack.tryAddFood(foodID, name);
     }
 
     public Pair<Integer, Integer> useBottle(String name) {

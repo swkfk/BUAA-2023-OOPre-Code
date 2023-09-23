@@ -19,9 +19,7 @@ public class Constants {
     public static final int OP_IDX_ADV_NAME = 2;
     public static final int OP_IDX_OBJ_ID = 2;
     public static final int OP_IDX_OBJ_NAME = 3;
-    public static final int OP_IDX_BOT_CAP = 4;
-    public static final int OP_IDX_EQU_STAR = 4;
-    public static final int OP_IDX_FOOD_ENERGY = 4;
+    public static final int OP_IDX_OBJ_ATTR = 4;
     public static final int OP_IDX_USE_OBJ_NAME = 2;
 
 }
