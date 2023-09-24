@@ -14,13 +14,25 @@ public class Backpack {
         maxBottles = levelToCapacity(level);
     }
 
+    public HashMap<String, PriorityQueue<Integer>> getBottles() {
+        return bottles;
+    }
+
+    public HashMap<String, Integer> getEquipments() {
+        return equipments;
+    }
+
+    public HashMap<String, PriorityQueue<Integer>> getFoods() {
+        return foods;
+    }
+
     public void tryAddEquipment(int equId, String name) {
         equipments.put(name, equId);
     }
 
     public void tryAddBottle(int botId, String name) {
         if (bottles.containsKey(name)) {
-            if (bottles.get(name).size() < maxBottles) {
+            if (bottles.get(name).size() < maxBottles && !bottles.get(name).contains(botId)) {
                 bottles.get(name).add(botId);
             }
         } else {
@@ -33,7 +45,9 @@ public class Backpack {
         if (!foods.containsKey(name)) {
             foods.put(name, new PriorityQueue<>());
         }
-        foods.get(name).add(foodId);
+        if (!foods.get(name).contains(foodId)) {
+            foods.get(name).add(foodId);
+        }
     }
 
     public void updateMaxBottles(int level) {
@@ -60,8 +74,24 @@ public class Backpack {
         bottles.get(name).poll();
     }
 
+    public void dropBottle(String name, int botID) {
+        if (bottles.containsKey(name)) {
+            bottles.get(name).remove(botID);
+        }
+    }
+
     public void useFood(String name) {
         foods.get(name).poll();
+    }
+
+    public void dropFood(String name, int foodID) {
+        if (foods.containsKey(name)) {
+            foods.get(name).remove(foodID);
+        }
+    }
+
+    public void dropEquipment(String name, int equID) {
+        equipments.remove(name, equID);
     }
 
     public static int levelToCapacity(int level) {

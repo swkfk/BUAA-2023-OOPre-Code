@@ -62,6 +62,7 @@ public class Adventurer {
     public void dropBottle(int botID, boolean isPrint) {
         String name = bottles.get(botID).getName();
         bottles.remove(botID);
+        backpack.dropBottle(name, botID);
         if (isPrint) {
             System.out.println(bottles.size() + " " + name);
         }
@@ -83,6 +84,7 @@ public class Adventurer {
     public void dropEquipment(int equID) {
         String name = equipments.get(equID).getName();
         equipments.remove(equID);
+        backpack.dropEquipment(name, equID);
         System.out.println(equipments.size() + " " + name);
     }
 
@@ -112,6 +114,7 @@ public class Adventurer {
     public void dropFood(int foodID, boolean isPrint) {
         String name = foods.get(foodID).getName();
         foods.remove(foodID);
+        backpack.dropFood(name, foodID);
         if (isPrint) {
             System.out.println(foods.size() + " " + name);
         }
@@ -134,7 +137,7 @@ public class Adventurer {
             if (bottleCapacity == 0) {
                 // remove it!
                 dropBottle(botId, false);  // from the inventory
-                backpack.useBottle(name);  // from the backpack
+                // backpack.useBottle(name);  // from the backpack
             }
             System.out.println(botId + " " + getPower());
         }
@@ -152,7 +155,7 @@ public class Adventurer {
             int foodEnergy = foods.get(foodId).getEnergy();
             this.enhanceLevel(foodEnergy);
             dropFood(foodId, false);
-            backpack.useFood(name);
+            // backpack.useFood(name);
             System.out.println(foodId + " " + getLevel());
         }
     }
