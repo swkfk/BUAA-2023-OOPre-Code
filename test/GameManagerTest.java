@@ -138,6 +138,10 @@ public class GameManagerTest {
 
         GameMgr.update(new ArrayList<>(Arrays.asList("12", "1002", "Potion")));  // Fail to use
         assertEquals(505, GameMgr.getAdventurers().get(1002).getPower());
+
+        // Not existed bottles
+        GameMgr.update(new ArrayList<>(Arrays.asList("12", "1002", "Heal")));
+        assertEquals(505, GameMgr.getAdventurers().get(1002).getPower());
     }
 
     @Test
@@ -217,6 +221,12 @@ public class GameManagerTest {
         assertEquals(
                 0, GameMgr.getAdventurers().get(1002).getBackpack().getFoods().get("Milk").size()
         );
+        assertEquals(13, GameMgr.getAdventurers().get(1002).getLevel());
+
+        // Not existed food name
+        GameMgr.update(new ArrayList<>(Arrays.asList("13", "1002", "Cake")));
+        // The food that was eaten up
+        GameMgr.update(new ArrayList<>(Arrays.asList("13", "1002", "Milk")));
         assertEquals(13, GameMgr.getAdventurers().get(1002).getLevel());
     }
 
