@@ -1,3 +1,4 @@
+import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,6 +22,8 @@ public class AdventurerTest {
         assertEquals(1, adventurer.getBottles().size());
         adventurer.dropBottle(1002);
         assertEquals(0, adventurer.getBottles().size());
+        adventurer.obtainBottle(new Pair<>("WaterPotion", new Pair<>(1122, 5)));
+        assertEquals(1, adventurer.getBottles().size());
     }
 
     @Test
@@ -32,6 +35,21 @@ public class AdventurerTest {
         adventurer.obtainEquipment(1102, "Armor", 10);
         assertEquals(1, adventurer.getEquipments().size());
         assertEquals("Armor", adventurer.getEquipments().get(1102).getName());
+        adventurer.obtainEquipment(new Pair<>("Shoes", new Pair<>(1111, 20)));
+        assertEquals(2, adventurer.getEquipments().size());
+        assertEquals(20, adventurer.getEquipments().get(1111).getStar());
+    }
+
+    @Test
+    public void obtainFood() {
+        assertEquals(0, adventurer.getFoods().size());
+        adventurer.obtainFood(1000, "candy", 10);
+        assertEquals(1, adventurer.getFoods().size());
+        adventurer.obtainFood(new Pair<>("meat", new Pair<>(1002, 50)));
+        assertEquals(2, adventurer.getFoods().size());
+        adventurer.dropFood(1002);
+        assertEquals(1, adventurer.getFoods().size());
+        assertEquals("candy", adventurer.getFoods().get(1000).getName());
     }
 
     @Test
@@ -42,5 +60,103 @@ public class AdventurerTest {
         adventurer.enhanceEquipment(1201);
         assertEquals(8, adventurer.getEquipments().get(1201).getStar());
         assertEquals(10, adventurer.getEquipments().get(1202).getStar());
+    }
+
+    @Test
+    public void fetchBottle() {
+        adventurer.obtainBottle(1111, "potion", 5);
+        adventurer.obtainBottle(1122, "potion", 6);
+        adventurer.fetchBottle(1111);
+        adventurer.fetchBottle(1122);  // Will Fail
+        assertEquals(1, adventurer.getBackpack().getBottles().get("potion").size());
+        adventurer.useBottle("potion");
+        assertEquals(505, adventurer.getPower());
+    }
+
+    @Test
+    public void fetchEquipment() {
+        adventurer.obtainEquipment(2222, "Helmet", 10);
+        adventurer.obtainEquipment(2223, "Helmet", 5);
+        adventurer.obtainEquipment(3333, "Boots", 11);
+        adventurer.fetchEquipment(2222);
+        assertEquals(2222, adventurer.getBackpack().getEquipments().get("Helmet").intValue());
+        adventurer.fetchEquipment(2223);
+        assertEquals(2223, adventurer.getBackpack().getEquipments().get("Helmet").intValue());
+        adventurer.fetchEquipment(3333);
+        assertEquals(2223, adventurer.getBackpack().getEquipments().get("Helmet").intValue());
+        assertEquals(3333, adventurer.getBackpack().getEquipments().get("Boots").intValue());
+    }
+
+
+    @Test
+    public void fetchFood() {
+        adventurer.obtainFood(4444, "Candy", 4);
+        adventurer.obtainFood(5555, "Candy", 5);
+        adventurer.obtainFood(3333, "Candy", 3);
+        adventurer.fetchFood(4444);
+        assertEquals(1, adventurer.getBackpack().getFoods().get("Candy").size());
+        adventurer.fetchFood(5555);
+        adventurer.fetchFood(3333);
+        assertEquals(3, adventurer.getBackpack().getFoods().get("Candy").size());
+        adventurer.useFood("Candy");
+        assertEquals(2, adventurer.getBackpack().getFoods().get("Candy").size());
+        assertEquals(4, adventurer.getLevel());
+        adventurer.useFood("Candy");
+        assertEquals(8, adventurer.getLevel());
+        adventurer.useFood("Candy");
+        assertEquals(13, adventurer.getLevel());
+        assertEquals(0, adventurer.getBackpack().getFoods().get("Candy").size());
+    }
+
+    @Test
+    public void useBottle() {
+        adventurer.obtainBottle(1111, "potion", 5);
+        adventurer.obtainBottle(1122, "potion", 6);
+        adventurer.fetchBottle(1122);
+        adventurer.fetchBottle(1111);  // Too many
+
+        adventurer.useBottle("potion");
+        assertEquals(506, adventurer.getPower());
+        assertEquals(1, adventurer.getBackpack().getBottles().get("potion").size());
+
+        adventurer.useBottle("potion");
+        assertEquals(506, adventurer.getPower());
+        assertEquals(0, adventurer.getBackpack().getBottles().get("potion").size());
+
+        adventurer.useBottle("potion");  // Fail to use
+
+        adventurer.fetchBottle(1111);
+        assertEquals(1, adventurer.getBackpack().getBottles().get("potion").size());
+        adventurer.useBottle("potion");
+        assertEquals(1, adventurer.getBackpack().getBottles().get("potion").size());
+        assertEquals(511, adventurer.getPower());
+
+        adventurer.obtainBottle(2222, "##", 100);
+        adventurer.useBottle("potion");  // Fail to use
+        assertEquals(511, adventurer.getPower());
+    }
+
+    @Test
+    public void useFood() {
+        adventurer.obtainFood(4444, "Candy", 4);
+        adventurer.obtainFood(5555, "Candy", 5);
+        adventurer.obtainFood(3333, "Candy", 3);
+
+        adventurer.fetchFood(4444);
+        adventurer.useFood("Candy");
+        assertEquals(5, adventurer.getLevel());
+
+        adventurer.fetchFood(5555);
+        adventurer.fetchFood(3333);
+        assertEquals(2, adventurer.getBackpack().getFoods().get("Candy").size());
+
+        adventurer.obtainFood(6666, "##", 6);
+        adventurer.obtainFood(7777, "##", 7);
+        adventurer.fetchFood(7777);
+        adventurer.useFood("##");
+        adventurer.useFood("##");  // Fail to use
+        assertEquals(12, adventurer.getLevel());
+        adventurer.useFood("Candy");
+        assertEquals(15, adventurer.getLevel());
     }
 }
