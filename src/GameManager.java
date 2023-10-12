@@ -9,7 +9,9 @@ import java.util.regex.Pattern;
 
 public class GameManager {
     private static final Pattern patBot = Pattern.compile("(\\d{4}/\\d{2})-([^-@#]*)-([^-@#]*)");
-    private static final Pattern patAtk = Pattern.compile("(\\d{4}/\\d{2})-([^-@#]*)@([^-@#]*)-([^-@#]*)");
+    private static final Pattern patAtk = Pattern.compile(
+            "(\\d{4}/\\d{2})-([^-@#]*)@([^-@#]*)-([^-@#]*)"
+    );
     private static final Pattern patAoe = Pattern.compile("(\\d{4}/\\d{2})-([^-@#]*)@#-([^-@#]*)");
     private LinkedHashMap<String, Adventurer> adventurersInFight;
     private HashMap<Integer, Adventurer> adventurers;
@@ -161,7 +163,13 @@ public class GameManager {
     }
 
     private Pair<String, Pair<Integer, Integer>> argParserObtain(ArrayList<String> input) {
-        return new Pair<>(input.get(Constants.OP_IDX_OBJ_NAME), new Pair<>(Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID)), Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ATTR))));
+        return new Pair<>(
+                input.get(Constants.OP_IDX_OBJ_NAME),
+                new Pair<>(
+                        Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID)),
+                        Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ATTR))
+                )
+        );
     }
 
     private int argParserSingleID(ArrayList<String> input) {
