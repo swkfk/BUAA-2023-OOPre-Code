@@ -294,4 +294,63 @@ public class GameManagerTest {
                 0, GameMgr.getAdventurers().get(1001).getBackpack().getBottles().get("Potion").size()
         );
     }
+
+    @Test
+    public void comprehensiveTest4_1() {
+        // Add adventurers
+        GameMgr.update(new ArrayList<>(Arrays.asList("1", "1001", "Adv1")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("1", "1002", "Adv2")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("1", "1003", "Adv3")));
+
+        // Add bottles
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1002", "1101", "Bot1", "100")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1003", "1102", "Bot2", "200")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1003", "1103", "Bot3", "300")));
+
+        // Fetch bottles
+        GameMgr.update(new ArrayList<>(Arrays.asList("10", "1003", "1102")));
+
+        // Add equipments
+        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1002", "1201", "Equ1", "10")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1002", "1202", "Equ2", "20")));
+
+        // Fetch equipments
+        GameMgr.update(new ArrayList<>(Arrays.asList("9", "1002", "1201")));
+
+        // Do Attack
+        GameMgr.update(new ArrayList<>(Arrays.asList("14", "2", "5", "Adv2", "Adv3")));
+        GameMgr.dispatchLog("2000/01-Adv2-Bot3");  // Fail to use
+        GameMgr.dispatchLog("2000/01-Adv3-Bot2");  // Power: 500 -> 700
+        GameMgr.dispatchLog("2000/02-Adv2@#-Equ2");  // Fail to use
+        assertEquals(700, GameMgr.getAdventurers().get(1003).getPower());
+        GameMgr.dispatchLog("2000/02-Adv2@#-Equ1");  // Do harm: 10
+        assertEquals(690, GameMgr.getAdventurers().get(1003).getPower());
+        GameMgr.dispatchLog("2000/02-Adv2@adv1-Equ2");  // Fail to attack
+        assertEquals(500, GameMgr.getAdventurers().get(1001).getPower());
+        GameMgr.clearFightMode();
+
+        // Coverage
+        GameMgr.update(new ArrayList<>(Arrays.asList("15", "2000/01")));  // Exist
+        GameMgr.update(new ArrayList<>(Arrays.asList("15", "2001/01")));  // Non-exist
+        GameMgr.update(new ArrayList<>(Arrays.asList("16", "1001")));  // Non-exist
+        GameMgr.update(new ArrayList<>(Arrays.asList("16", "1002")));  // Exist
+        GameMgr.update(new ArrayList<>(Arrays.asList("17", "1003")));  // Exist
+        GameMgr.update(new ArrayList<>(Arrays.asList("17", "1002")));  // Non-exist
+
+        // Equipment star-up
+        GameMgr.update(new ArrayList<>(Arrays.asList("6", "1002", "1201")));  // Star: 11
+
+        // Fetch & eat food
+        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1002", "1301", "Food1", "3")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("11", "1002", "1301")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("13", "1002", "Food1")));  // Level: 4
+        assertEquals(4, GameMgr.getAdventurers().get(1002).getLevel());
+
+        // Do attack
+        GameMgr.update(new ArrayList<>(Arrays.asList("14", "3", "2", "Adv2", "Adv3", "Adv1")));
+        GameMgr.dispatchLog("2002/02-Adv2@#-Equ1");  // Harm: 44
+        GameMgr.dispatchLog("2002/02-Adv2@Adv1-Equ1");  // Harm: 44
+        assertEquals(412, GameMgr.getAdventurers().get(1001).getPower());
+        assertEquals(646, GameMgr.getAdventurers().get(1003).getPower());
+    }
 }

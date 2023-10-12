@@ -2,7 +2,7 @@ import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class AdventurerTest {
 
@@ -11,6 +11,67 @@ public class AdventurerTest {
     @Before
     public void buildAdventurer() {
         adventurer = new Adventurer(1000, "TheHero");
+    }
+
+    @Test
+    public void getId() {
+        assertEquals(1000, adventurer.getId());
+    }
+
+    @Test
+    public void getName() {
+        assertEquals("TheHero", adventurer.getName());
+    }
+
+    @Test
+    public void checkBottle() {
+        assertFalse(adventurer.checkBottle("potion"));
+        adventurer.obtainBottle(1002, "potion", 8);
+        assertFalse(adventurer.checkBottle("potion"));
+        adventurer.fetchBottle(1002);
+        assertTrue(adventurer.checkBottle("potion"));
+        assertFalse(adventurer.checkBottle("Potion"));
+        adventurer.dropBottle(1002, false);
+        assertFalse(adventurer.checkBottle("potion"));
+    }
+
+    @Test
+    public void checkEquipment() {
+        assertFalse(adventurer.checkEquipment("armor"));
+        adventurer.obtainEquipment(1002, "armor", 8);
+        assertFalse(adventurer.checkEquipment("armor"));
+        adventurer.fetchEquipment(1002);
+        assertTrue(adventurer.checkEquipment("armor"));
+        assertFalse(adventurer.checkEquipment("Armor"));
+        adventurer.dropEquipment(1002);
+        assertFalse(adventurer.checkEquipment("armor"));
+    }
+
+    @Test
+    public void useBottleInFight() {
+        adventurer.obtainBottle(1111, "potion", 5);
+        adventurer.obtainBottle(1122, "potion", 6);
+        adventurer.fetchBottle(1122);
+        adventurer.fetchBottle(1111);
+
+        adventurer.useBottleInFight("potion");
+        assertEquals(506, adventurer.getPower());
+        adventurer.useBottleInFight("potion");
+        assertEquals(506, adventurer.getPower());
+
+        adventurer.fetchBottle(1111);
+        adventurer.useBottleInFight("potion");
+        assertEquals(511, adventurer.getPower());
+    }
+
+    @Test
+    public void useEquipmentInFight() {
+        adventurer.obtainEquipment(1201, "Armor", 6);
+        adventurer.enhanceEquipment(1201);
+        adventurer.fetchEquipment(1201);
+        assertEquals(7, adventurer.useEquipmentInFight("Armor"));
+        adventurer.enhanceLevel(9);
+        assertEquals(70, adventurer.useEquipmentInFight("Armor"));
     }
 
     @Test

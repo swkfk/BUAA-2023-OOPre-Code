@@ -55,6 +55,7 @@ public class BackpackTest {
         assertEquals(1001, backpack.getFoods().get("Meat").peek().intValue());
 
         backpack.tryAddFood(1000, "Candy");
+        backpack.tryAddFood(1000, "Candy");
         assertEquals(1001, backpack.getFoodId("Meat"));
         assertEquals(1000, backpack.getFoodId("Candy"));
 
