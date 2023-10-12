@@ -2,6 +2,7 @@ import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,14 +11,14 @@ public class GameManager {
     private static final Pattern patBot = Pattern.compile("(\\d{4}/\\d{2})-([^-@#]*)-([^-@#]*)");
     private static final Pattern patAtk = Pattern.compile("(\\d{4}/\\d{2})-([^-@#]*)@([^-@#]*)-([^-@#]*)");
     private static final Pattern patAoe = Pattern.compile("(\\d{4}/\\d{2})-([^-@#]*)@#-([^-@#]*)");
-    private HashMap<String, Adventurer> adventurersInFight;
+    private LinkedHashMap<String, Adventurer> adventurersInFight;
     private HashMap<Integer, Adventurer> adventurers;
     private HashMap<String, ArrayList<LoggerBase>> loggers;
 
     public GameManager() {
         adventurers = new HashMap<>();
         loggers = new HashMap<>();
-        adventurersInFight = new HashMap<>();
+        adventurersInFight = new LinkedHashMap<>();
     }
 
     public HashMap<Integer, Adventurer> getAdventurers() {
@@ -28,7 +29,7 @@ public class GameManager {
         int type = Integer.parseInt(input.get(Constants.OP_IDX_TYPE));
         int advID = 0;
         Adventurer adventurer = null;
-        if (type != Constants.ADD_LOG && type != 15) {
+        if (type != Constants.ADD_LOG && type != Constants.QUERY_LOG_DATE) {
             advID = Integer.parseInt(input.get(Constants.OP_IDX_ADV_ID));
             adventurer = adventurers.get(advID);
         }
@@ -65,6 +66,15 @@ public class GameManager {
                         Integer.parseInt(input.get(Constants.OP_IDX_LOG_K)),
                         input.subList(Constants.OP_IDX_LOG_NAME_BEGIN, input.size())
                 );
+            }
+            case Constants.QUERY_LOG_DATE: {
+                outputLogByDate(input.get(Constants.OP_IDX_QUERY_DATE));
+                break;
+            }
+            case Constants.QUERY_LOG_ATTACK:
+            case Constants.QUERY_LOG_ATTACKED: {
+                queryLogByAdvId(type, adventurer);
+                break;
             }
             default: {
             }
@@ -181,14 +191,14 @@ public class GameManager {
             Adventurer attacker = adventurersInFight.get(matcherAtk.group(2));
             Adventurer attackee = adventurersInFight.get(matcherAtk.group(3));
             String equName = matcherAtk.group(4);
-            System.out.println("Atk: " + date + equName);
             if (attacker == null || attackee == null || !attacker.checkEquipment(equName)) {
                 errorFightLog();
                 return;
             }
             int damage = attacker.useEquipmentInFight(equName);
             LoggerNormalAttack logger =
-                    new LoggerNormalAttack(date, attacker.getName(), attackee.getName(), equName);
+                    new LoggerNormalAttack(date, attacker.getName(), equName, attackee.getName());
+            addLog(date, logger);
             attacker.doAttack(logger);
             int restPower = attackee.beAttacked(damage, logger);
             System.out.println(attackee.getId() + " " + restPower);
@@ -203,6 +213,7 @@ public class GameManager {
             int damage = attacker.useEquipmentInFight(equName);
             LoggerAoeAttack logger =
                     new LoggerAoeAttack(date, attacker.getName(), equName);
+            addLog(date, logger);
             attacker.doAttack(logger);
             ArrayList<String> outList = new ArrayList<>();
             adventurersInFight.forEach((ignored, adventurer) -> {
@@ -233,5 +244,21 @@ public class GameManager {
             }
         }
         return null;  // Unreachable!
+    }
+
+    private void outputLogByDate(String date) {
+        if (!loggers.containsKey(date) || loggers.get(date).isEmpty()) {
+            System.out.println("No Matched Log");
+            return;
+        }
+        loggers.get(date).forEach(System.out::println);
+    }
+
+    private void queryLogByAdvId(int type, Adventurer adventurer) {
+        if (type == Constants.QUERY_LOG_ATTACK) {
+            adventurer.queryLoggerAttacker();
+        } else {
+            adventurer.queryLoggerAttackee();
+        }
     }
 }

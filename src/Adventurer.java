@@ -211,4 +211,20 @@ public class Adventurer {
         level += up;
         backpack.updateMaxBottles(level);
     }
+
+    public void queryLoggerAttacker() {
+        if (loggerAttacker.isEmpty()) {
+            System.out.println("No Matched Log");
+            return;
+        }
+        loggerAttacker.forEach(System.out::println);
+    }
+
+    public void queryLoggerAttackee() {
+        if (loggerAttackee.isEmpty()) {
+            System.out.println("No Matched Log");
+            return;
+        }
+        loggerAttackee.forEach(System.out::println);
+    }
 }
