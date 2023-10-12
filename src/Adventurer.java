@@ -1,16 +1,31 @@
 import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Adventurer {
     private int id;
+
     private String name;
+
     private HashMap<Integer, Bottle> bottles;
     private HashMap<Integer, Equipment> equipments;
     private HashMap<Integer, Food> foods;
     private Backpack backpack;
+
+    private ArrayList<LoggerBase> loggerAttacker;
+    private ArrayList<LoggerBase> loggerAttackee;
+
     private int level;
     private int power;
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
 
     public HashMap<Integer, Equipment> getEquipments() {
         return equipments;
@@ -45,6 +60,8 @@ public class Adventurer {
         this.equipments = new HashMap<>();
         this.foods = new HashMap<>();
         this.backpack = new Backpack(this.level);
+        this.loggerAttacker = new ArrayList<>();
+        this.loggerAttackee = new ArrayList<>();
     }
 
     public void obtainBottle(Pair<String, Pair<Integer, Integer>> args) {
@@ -73,6 +90,10 @@ public class Adventurer {
         backpack.tryAddBottle(botID, name);
     }
 
+    public boolean checkBottle(String botName) {
+        return backpack.getBottleId(botName) != -1;
+    }
+
     public void obtainEquipment(Pair<String, Pair<Integer, Integer>> args) {
         obtainEquipment(args.getValue().getKey(), args.getKey(), args.getValue().getValue());
     }
@@ -91,6 +112,10 @@ public class Adventurer {
     public void fetchEquipment(int equID) {
         String name = equipments.get(equID).getName();
         backpack.tryAddEquipment(equID, name);
+    }
+
+    public boolean checkEquipment(String equName) {
+        return backpack.getEquId(equName) != -1;
     }
 
     public void enhanceEquipment(int equID) {
@@ -131,16 +156,38 @@ public class Adventurer {
             // Nothing to use
             System.out.println("fail to use " + name);
         } else {
-            // use: botId, name
-            int bottleCapacity = bottles.get(botId).clearCapacity();
-            this.enhancePower(bottleCapacity);
-            if (bottleCapacity == 0) {
-                // remove it!
-                dropBottle(botId, false);  // from the inventory
-                // backpack.useBottle(name);  // from the backpack
-            }
-            System.out.println(botId + " " + getPower());
+            useBottleCore(botId);
         }
+    }
+
+    public void useBottleInFight(String name) {
+        int botId = backpack.getBottleId(name);  // assert .. != -1
+        useBottleCore(botId);
+    }
+
+    private void useBottleCore(int botId) {
+        int bottleCapacity = bottles.get(botId).clearCapacity();
+        this.enhancePower(bottleCapacity);
+        if (bottleCapacity == 0) {
+            dropBottle(botId, false);  // from the inventory & backpack
+        }
+        System.out.println(botId + " " + getPower());
+    }
+
+    public void doAttack(LoggerBase logger) {
+        loggerAttacker.add(logger);
+    }
+
+    public int beAttacked(int damage, LoggerBase logger) {
+        loggerAttackee.add(logger);
+        power -= damage;
+        return power;
+    }
+
+    public int useEquipmentInFight(String equName) {
+        int equId = backpack.getEquId(equName);
+        int equStar = equipments.get(equId).getStar();
+        return level * equStar;
     }
 
     public void enhancePower(int powerUp) {

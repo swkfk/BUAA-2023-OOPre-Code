@@ -11,11 +11,21 @@ public class Main {
             String nextLine = scanner.nextLine();
             String[] strings = nextLine.trim().split(" +");
             inputInfo.add(new ArrayList<>(Arrays.asList(strings)));
+            if (strings[0].contains("-")) {
+                --i;
+            }
         }
 
         GameManager mgr = new GameManager();
+        int restLogCount = 0;
         for (ArrayList<String> info : inputInfo) {
-            mgr.update(info);
+            if (restLogCount == 0) {
+                mgr.clearFightMode();
+                restLogCount += mgr.update(info);
+            } else {
+                mgr.dispatchLog(info.get(0));
+                restLogCount -= 1;
+            }
         }
     }
 }

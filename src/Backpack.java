@@ -70,6 +70,10 @@ public class Backpack {
         }
     }
 
+    public int getEquId(String name) {
+        return equipments.getOrDefault(name, -1);
+    }
+
     public void useBottle(String name) {
         bottles.get(name).poll();
     }
