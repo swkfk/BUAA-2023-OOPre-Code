@@ -12,7 +12,7 @@ public class Main {
             String[] strings = scanner.nextLine().trim().split(" +");
             int requireLogCount = mgr.update(new ArrayList<>(Arrays.asList(strings)));
             for (int j = 0; j < requireLogCount; ++j) {
-                mgr.dispatchLog(scanner.nextLine());
+                mgr.dispatchLog(scanner.nextLine().trim());
             }
             mgr.clearFightMode();
         }
