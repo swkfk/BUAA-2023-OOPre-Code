@@ -14,6 +14,7 @@ public class Main {
             for (int j = 0; j < requireLogCount; ++j) {
                 mgr.dispatchLog(scanner.nextLine());
             }
+            mgr.clearFightMode();
         }
     }
 }
