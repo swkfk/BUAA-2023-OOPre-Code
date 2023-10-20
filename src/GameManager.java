@@ -13,10 +13,10 @@ public class GameManager {
             "(\\d{4}/\\d{2})-([^-@#]*)@([^-@#]*)-([^-@#]*)"
     );
     private static final Pattern patAoe = Pattern.compile("(\\d{4}/\\d{2})-([^-@#]*)@#-([^-@#]*)");
-    private LinkedHashMap<String, Adventurer> adventurersInFight;
-    private HashMap<Integer, Adventurer> adventurers;
-    private HashMap<String, ArrayList<LoggerBase>> loggers;
-    private List<BiConsumer<Adventurer, InputWrapper>> fn;
+    private final LinkedHashMap<String, Adventurer> adventurersInFight;
+    private final HashMap<Integer, Adventurer> adventurers;
+    private final HashMap<String, ArrayList<LoggerBase>> loggers;
+    private final List<BiConsumer<Adventurer, InputWrapper>> fn;
 
     public GameManager() {
         adventurers = new HashMap<>();

@@ -1,7 +1,7 @@
 public class Food {
-    private int id;
-    private String name;
-    private int energy;
+    private final int id;
+    private final String name;
+    private final int energy;
 
     public Food(int id, String name, int energy) {
         this.id = id;

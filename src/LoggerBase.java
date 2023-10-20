@@ -1,8 +1,8 @@
 public abstract class LoggerBase {
-    private String date;
+    private final String date;
 
-    private String mainAdvName;
-    private String mainObjName;
+    private final String mainAdvName;
+    private final String mainObjName;
 
     public String getDate() {
         return date;

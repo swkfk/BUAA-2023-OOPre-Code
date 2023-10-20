@@ -2,9 +2,9 @@ import java.util.HashMap;
 import java.util.PriorityQueue;
 
 public class Backpack {
-    private HashMap<String, Integer> equipments;
-    private HashMap<String, PriorityQueue<Integer>> bottles;
-    private HashMap<String, PriorityQueue<Integer>> foods;
+    private final HashMap<String, Integer> equipments;
+    private final HashMap<String, PriorityQueue<Integer>> bottles;
+    private final HashMap<String, PriorityQueue<Integer>> foods;
     private int maxBottles;
 
     public Backpack(int level) {

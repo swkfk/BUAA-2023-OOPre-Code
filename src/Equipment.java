@@ -1,6 +1,6 @@
 public class Equipment {
-    private int id;
-    private String name;
+    private final int id;
+    private final String name;
     private int star;
 
     public Equipment(int id, String name, int star) {

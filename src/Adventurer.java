@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Adventurer {
-    private int id;
+    private final int id;
 
-    private String name;
+    private final String name;
 
-    private HashMap<Integer, Bottle> bottles;
-    private HashMap<Integer, Equipment> equipments;
-    private HashMap<Integer, Food> foods;
-    private Backpack backpack;
+    private final HashMap<Integer, Bottle> bottles;
+    private final HashMap<Integer, Equipment> equipments;
+    private final HashMap<Integer, Food> foods;
+    private final Backpack backpack;
 
-    private ArrayList<LoggerBase> loggerAttacker;
-    private ArrayList<LoggerBase> loggerAttackee;
+    private final ArrayList<LoggerBase> loggerAttacker;
+    private final ArrayList<LoggerBase> loggerAttackee;
 
     private int level;
     private int power;
