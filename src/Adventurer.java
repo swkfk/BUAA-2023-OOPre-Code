@@ -64,10 +64,6 @@ public class Adventurer {
         this.loggerAttackee = new ArrayList<>();
     }
 
-    public void obtainBottle(Pair<String, Pair<Integer, Integer>> args) {
-        obtainBottle(args.getValue().getKey(), args.getKey(), args.getValue().getValue());
-    }
-
     public void obtainBottle(int botID, String botName, int capacity) {
         bottles.put(botID, new Bottle(botID, botName, capacity));
     }
@@ -94,10 +90,6 @@ public class Adventurer {
         return backpack.getBottleId(botName) != -1;
     }
 
-    public void obtainEquipment(Pair<String, Pair<Integer, Integer>> args) {
-        obtainEquipment(args.getValue().getKey(), args.getKey(), args.getValue().getValue());
-    }
-
     public void obtainEquipment(int equId, String equName, int equStar) {
         equipments.put(equId, new Equipment(equId, equName, equStar));
     }
@@ -122,10 +114,6 @@ public class Adventurer {
         Equipment equipment = equipments.get(equID);
         equipment.enhanceStar();
         System.out.println(equipment.getName() + " " + equipment.getStar());
-    }
-
-    public void obtainFood(Pair<String, Pair<Integer, Integer>> args) {
-        obtainFood(args.getValue().getKey(), args.getKey(), args.getValue().getValue());
     }
 
     public void obtainFood(int foodID, String foodName, int foodEnergy) {

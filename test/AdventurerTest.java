@@ -83,7 +83,7 @@ public class AdventurerTest {
         assertEquals(1, adventurer.getBottles().size());
         adventurer.dropBottle(1002);
         assertEquals(0, adventurer.getBottles().size());
-        adventurer.obtainBottle(new Pair<>("WaterPotion", new Pair<>(1122, 5)));
+        adventurer.obtainBottle(1122, "WaterPotion", 5);
         assertEquals(1, adventurer.getBottles().size());
     }
 
@@ -96,7 +96,7 @@ public class AdventurerTest {
         adventurer.obtainEquipment(1102, "Armor", 10);
         assertEquals(1, adventurer.getEquipments().size());
         assertEquals("Armor", adventurer.getEquipments().get(1102).getName());
-        adventurer.obtainEquipment(new Pair<>("Shoes", new Pair<>(1111, 20)));
+        adventurer.obtainEquipment(1111, "Shoes", 20);
         assertEquals(2, adventurer.getEquipments().size());
         assertEquals(20, adventurer.getEquipments().get(1111).getStar());
     }
@@ -106,7 +106,7 @@ public class AdventurerTest {
         assertEquals(0, adventurer.getFoods().size());
         adventurer.obtainFood(1000, "candy", 10);
         assertEquals(1, adventurer.getFoods().size());
-        adventurer.obtainFood(new Pair<>("meat", new Pair<>(1002, 50)));
+        adventurer.obtainFood(1002, "meat", 50);
         assertEquals(2, adventurer.getFoods().size());
         adventurer.dropFood(1002);
         assertEquals(1, adventurer.getFoods().size());
