@@ -136,6 +136,7 @@ public class GameManager {
     }
 
     private void enterFightMode(Adventurer ignored, InputWrapper wrapper) {
+        System.out.println("Enter Fight Mode");
         wrapper.subList(Indexes.LOG_NAME_BEGIN).forEach(
             s -> adventurersInFight.put(s, getAdventurerByName(s))
         );
