@@ -1,5 +1,5 @@
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -49,7 +49,7 @@ public class GameManager {
     }
 
     public int update(ArrayList<String> input) {
-        InputWrapper wrapper =  new InputWrapper(input);
+        InputWrapper wrapper = new InputWrapper(input);
         int type = wrapper.getInt(Indexes.TYPE);
 
         // Only ADD_LOG(14) & QUERY_LOG_DATE(15) have no adventurer
@@ -76,11 +76,25 @@ public class GameManager {
     }
 
     private void obtainBottle(Adventurer adventurer, InputWrapper wrapper) {
-        adventurer.obtainBottle(
-                wrapper.getInt(Indexes.OBJ_ID),
-                wrapper.get(Indexes.OBJ_NAME),
-                wrapper.getInt(Indexes.OBJ_ATTR)
-        );
+        Bottle bottle;
+
+        int botId = wrapper.getInt(Indexes.OBJ_ID);
+        String botName = wrapper.get(Indexes.OBJ_NAME);
+        int botCapacity = wrapper.getInt(Indexes.OBJ_ATTR);
+        long botPrice = wrapper.getLong(Indexes.OBJ_PRICE);
+        String type = wrapper.get(Indexes.OBJ_TYPE);
+
+        if (type.equals("ReinforcedBottle")) {
+            double botRatio = wrapper.getDouble(Indexes.OBJ_OTHER);
+            bottle = new BottleReinforced(botId, botName, botCapacity, botPrice, botRatio);
+        } else if (type.equals("RecoverBottle")) {
+            double botRatio = wrapper.getDouble(Indexes.OBJ_OTHER);
+            bottle = new BottleRecover(botId, botName, botCapacity, botPrice, botRatio);
+        } else {
+            bottle = new BottleRegular(botId, botName, botCapacity, botPrice);
+        }
+
+        adventurer.obtainBottle(botId, bottle);
     }
 
     private void dropBottle(Adventurer adventurer, InputWrapper wrapper) {
@@ -88,11 +102,25 @@ public class GameManager {
     }
 
     private void obtainEquipment(Adventurer adventurer, InputWrapper wrapper) {
-        adventurer.obtainEquipment(
-                wrapper.getInt(Indexes.OBJ_ID),
-                wrapper.get(Indexes.OBJ_NAME),
-                wrapper.getInt(Indexes.OBJ_ATTR)
-        );
+        Equipment equipment;
+
+        int equId = wrapper.getInt(Indexes.OBJ_ID);
+        String equName = wrapper.get(Indexes.OBJ_NAME);
+        int equCapacity = wrapper.getInt(Indexes.OBJ_ATTR);
+        long equPrice = wrapper.getLong(Indexes.OBJ_PRICE);
+        String type = wrapper.get(Indexes.OBJ_TYPE);
+
+        if (type.equals("CritEquipment")) {
+            int critical = wrapper.getInt(Indexes.OBJ_OTHER);
+            equipment = new EquipmentCrit(equId, equName, equCapacity, equPrice, critical);
+        } else if (type.equals("EpicEquipment")) {
+            double ratio = wrapper.getDouble(Indexes.OBJ_OTHER);
+            equipment = new EquipmentEpic(equId, equName, equCapacity, equPrice, ratio);
+        } else {
+            equipment = new EquipmentRegular(equId, equName, equCapacity, equPrice);
+        }
+
+        adventurer.obtainEquipment(wrapper.getInt(Indexes.OBJ_ID), equipment);
     }
 
     private void dropEquipment(Adventurer adventurer, InputWrapper wrapper) {
@@ -105,9 +133,13 @@ public class GameManager {
 
     private void obtainFood(Adventurer adventurer, InputWrapper wrapper) {
         adventurer.obtainFood(
+            wrapper.getInt(Indexes.OBJ_ID),
+            new Food(
                 wrapper.getInt(Indexes.OBJ_ID),
                 wrapper.get(Indexes.OBJ_NAME),
-                wrapper.getInt(Indexes.OBJ_ATTR)
+                wrapper.getInt(Indexes.OBJ_ATTR),
+                wrapper.getLong(Indexes.OBJ_PRICE)
+            )
         );
     }
 
@@ -186,7 +218,7 @@ public class GameManager {
                 errorFightLog();
                 return;
             }
-            int damage = attacker.useEquipmentInFight(equName);
+            int damage = attacker.useEquipmentInFight(equName, attackee.getPower());
             LoggerNormalAttack logger =
                     new LoggerNormalAttack(date, attacker.getName(), equName, attackee.getName());
             addLog(date, logger);
@@ -201,7 +233,6 @@ public class GameManager {
                 errorFightLog();
                 return;
             }
-            int damage = attacker.useEquipmentInFight(equName);
             LoggerAoeAttack logger =
                     new LoggerAoeAttack(date, attacker.getName(), equName);
             addLog(date, logger);
@@ -211,7 +242,10 @@ public class GameManager {
                 if (adventurer == attacker) {
                     return;
                 }
-                outList.add(Integer.toString(adventurer.beAttacked(damage, logger)));
+                outList.add(Integer.toString(adventurer.beAttacked(
+                        attacker.useEquipmentInFight(equName, adventurer.getPower()),
+                        logger
+                )));
             });
             System.out.println(String.join(" ", outList));
         }

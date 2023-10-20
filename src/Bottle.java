@@ -1,13 +1,14 @@
 public class Bottle {
     private final int id;
     private final String name;
-
     private int capacity;
+    private final long price;
 
-    public Bottle(int id, String name, int capacity) {
+    public Bottle(int id, String name, int capacity, long price) {
         this.capacity = capacity;
         this.name = name;
         this.id = id;
+        this.price = price;
     }
 
     public String getName() {
@@ -18,9 +19,11 @@ public class Bottle {
         return capacity;
     }
 
-    public int clearCapacity() {
-        int ret = capacity;
+    public void clearCapacity() {
         capacity = 0;
-        return ret;
+    }
+
+    public int getRecovery(int ignored) {
+        return capacity;
     }
 }

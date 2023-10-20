@@ -1,5 +1,3 @@
-import javafx.util.Pair;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -64,8 +62,8 @@ public class Adventurer {
         this.loggerAttackee = new ArrayList<>();
     }
 
-    public void obtainBottle(int botID, String botName, int capacity) {
-        bottles.put(botID, new Bottle(botID, botName, capacity));
+    public void obtainBottle(int botID, Bottle bottle) {
+        bottles.put(botID, bottle);
     }
 
     public void dropBottle(int botID) {
@@ -90,8 +88,8 @@ public class Adventurer {
         return backpack.getBottleId(botName) != -1;
     }
 
-    public void obtainEquipment(int equId, String equName, int equStar) {
-        equipments.put(equId, new Equipment(equId, equName, equStar));
+    public void obtainEquipment(int equId, Equipment equipment) {
+        equipments.put(equId, equipment);
     }
 
     public void dropEquipment(int equID) {
@@ -116,8 +114,8 @@ public class Adventurer {
         System.out.println(equipment.getName() + " " + equipment.getStar());
     }
 
-    public void obtainFood(int foodID, String foodName, int foodEnergy) {
-        foods.put(foodID, new Food(foodID, foodName, foodEnergy));
+    public void obtainFood(int foodID, Food food) {
+        foods.put(foodID, food);
     }
 
     public void dropFood(int foodID) {
@@ -154,9 +152,12 @@ public class Adventurer {
     }
 
     private void useBottleCore(int botId) {
-        int bottleCapacity = bottles.get(botId).clearCapacity();
-        this.enhancePower(bottleCapacity);
-        if (bottleCapacity == 0) {
+        Bottle bottle = bottles.get(botId);
+        int recovery = bottle.getRecovery(power);
+        int capacity = bottle.getCapacity();
+        bottle.clearCapacity();
+        this.enhancePower(recovery);
+        if (capacity == 0) {
             dropBottle(botId, false);  // from the inventory & backpack
         }
         System.out.println(botId + " " + getPower());
@@ -172,10 +173,14 @@ public class Adventurer {
         return power;
     }
 
-    public int useEquipmentInFight(String equName) {
+    public int useEquipmentInFight(String equName, int victimPower) {
         int equId = backpack.getEquId(equName);
-        int equStar = equipments.get(equId).getStar();
-        return level * equStar;
+        Equipment equipment = equipments.get(equId);
+        if (equipment instanceof EquipmentEpic) {
+            return equipments.get(equId).getDamage(victimPower);
+        } else {
+            return equipments.get(equId).getDamage(level);
+        }
     }
 
     public void enhancePower(int powerUp) {
