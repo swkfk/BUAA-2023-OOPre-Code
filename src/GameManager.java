@@ -1,9 +1,9 @@
-import javafx.util.Pair;
-
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,11 +16,32 @@ public class GameManager {
     private LinkedHashMap<String, Adventurer> adventurersInFight;
     private HashMap<Integer, Adventurer> adventurers;
     private HashMap<String, ArrayList<LoggerBase>> loggers;
+    private List<BiConsumer<Adventurer, InputWrapper>> fn;
 
     public GameManager() {
         adventurers = new HashMap<>();
         loggers = new HashMap<>();
         adventurersInFight = new LinkedHashMap<>();
+        fn = Arrays.asList(
+                /* 0 */ null,
+                /* 1 */ this::addAdventurer,
+                /* 2 */ this::obtainBottle,
+                /* 3 */ this::dropBottle,
+                /* 4 */ this::obtainEquipment,
+                /* 5 */ this::dropEquipment,
+                /* 6 */ this::enhanceEquipment,
+                /* 7 */ this::obtainFood,
+                /* 8 */ this::dropFood,
+                /* 9 */ this::fetchEquipment,
+                /* 10 */ this::fetchBottle,
+                /* 11 */ this::fetchFood,
+                /* 12 */ this::useBottle,
+                /* 13 */ this::useFood,
+                /* 14 */ this::enterFightMode,
+                /* 15 */ this::queryLogByDate,
+                /* 16 */ this::queryLogByAttacker,
+                /* 17 */ this::queryLogByAttackee
+        );
     }
 
     public HashMap<Integer, Adventurer> getAdventurers() {
@@ -28,156 +49,117 @@ public class GameManager {
     }
 
     public int update(ArrayList<String> input) {
-        int type = Integer.parseInt(input.get(Constants.OP_IDX_TYPE));
-        int advID = 0;
+        InputWrapper wrapper =  new InputWrapper(input);
+        int type = wrapper.getInt(Indexes.TYPE);
+
+        // Only ADD_LOG(14) & QUERY_LOG_DATE(15) have no adventurer
         Adventurer adventurer = null;
-        if (type != Constants.ADD_LOG && type != Constants.QUERY_LOG_DATE) {
-            advID = Integer.parseInt(input.get(Constants.OP_IDX_ADV_ID));
-            adventurer = adventurers.get(advID);
+        if (type != Indexes.TYPE_ADD_LOG && type != Indexes.TYPE_QUERY_LOG_DATE) {
+            adventurer = adventurers.get(Integer.parseInt(input.get(Indexes.ADV_ID)));
         }
-        switch (type) {
-            case Constants.ADD_ADVENTURER: {
-                adventurers.put(advID, new Adventurer(advID, input.get(Constants.OP_IDX_ADV_NAME)));
-                break;
-            }
-            case Constants.OBTAIN_BOTTLE:
-            case Constants.OBTAIN_EQUIPMENT:
-            case Constants.OBTAIN_FOOD: {
-                update(adventurer, type, argParserObtain(input));
-                break;
-            }
-            case Constants.DROP_BOTTLE:
-            case Constants.DROP_EQUIPMENT:
-            case Constants.STAR_UP_EQUIPMENT:
-            case Constants.DROP_FOOD:
-            case Constants.FETCH_BOTTLE:
-            case Constants.FETCH_EQUIPMENT:
-            case Constants.FETCH_FOOD: {
-                update(adventurer, type, argParserSingleID(input));
-                break;
-            }
-            case Constants.USE_BOTTLE:
-            case Constants.USE_FOOD: {
-                update(adventurer, type, argParserSingleName(input));
-                break;
-            }
-            case Constants.ADD_LOG: {
-                System.out.println("Enter Fight Mode");
-                return update(
-                        Integer.parseInt(input.get(Constants.OP_IDX_LOG_M)),
-                        Integer.parseInt(input.get(Constants.OP_IDX_LOG_K)),
-                        input.subList(Constants.OP_IDX_LOG_NAME_BEGIN, input.size())
-                );
-            }
-            case Constants.QUERY_LOG_DATE: {
-                outputLogByDate(input.get(Constants.OP_IDX_QUERY_DATE));
-                break;
-            }
-            case Constants.QUERY_LOG_ATTACK:
-            case Constants.QUERY_LOG_ATTACKED: {
-                queryLogByAdvId(type, adventurer);
-                break;
-            }
-            default: {
-            }
-        }
-        return 0;
-    }
 
-    private void update(Adventurer adv, int type, Pair<String, Pair<Integer, Integer>> args) {
-        switch (type) {
-            case Constants.OBTAIN_BOTTLE: {
-                adv.obtainBottle(args);
-                break;
-            }
-            case Constants.OBTAIN_EQUIPMENT: {
-                adv.obtainEquipment(args);
-                break;
-            }
-            case Constants.OBTAIN_FOOD: {
-                adv.obtainFood(args);
-                break;
-            }
-            default: {
-            }
+        // Do actions by type
+        fn.get(type).accept(adventurer, wrapper);
+
+        // Return values to read logs
+        if (type == Indexes.TYPE_ADD_LOG) {
+            return wrapper.getInt(Indexes.LOG_K);
+        } else {
+            return 0;
         }
     }
 
-    private void update(Adventurer adv, int type, int arg) {
-        switch (type) {
-            case Constants.DROP_BOTTLE: {
-                adv.dropBottle(arg);
-                break;
-            }
-            case Constants.DROP_EQUIPMENT: {
-                adv.dropEquipment(arg);
-                break;
-            }
-            case Constants.STAR_UP_EQUIPMENT: {
-                adv.enhanceEquipment(arg);
-                break;
-            }
-            case Constants.DROP_FOOD: {
-                adv.dropFood(arg);
-                break;
-            }
-            case Constants.FETCH_BOTTLE: {
-                adv.fetchBottle(arg);
-                break;
-            }
-            case Constants.FETCH_EQUIPMENT: {
-                adv.fetchEquipment(arg);
-                break;
-            }
-            case Constants.FETCH_FOOD: {
-                adv.fetchFood(arg);
-                break;
-            }
-            default: {
-            }
-        }
+    private void addAdventurer(Adventurer ignored, InputWrapper wrapper) {
+        int advID = wrapper.getInt(Indexes.ADV_ID);
+        String advName = wrapper.get(Indexes.ADV_NAME);
+        adventurers.put(advID, new Adventurer(advID, advName));
     }
 
-    private void update(Adventurer adv, int type, String arg) {
-        switch (type) {
-            case Constants.USE_BOTTLE: {
-                adv.useBottle(arg);
-                break;
-            }
-            case Constants.USE_FOOD: {
-                adv.useFood(arg);
-                break;
-            }
-            default: {
-            }
-        }
+    private void obtainBottle(Adventurer adventurer, InputWrapper wrapper) {
+        adventurer.obtainBottle(
+                wrapper.getInt(Indexes.OBJ_ID),
+                wrapper.get(Indexes.OBJ_NAME),
+                wrapper.getInt(Indexes.OBJ_ATTR)
+        );
     }
 
-    private int update(int ignored, int k, List<String> adventuresNames) {
-        adventuresNames.forEach(s -> adventurersInFight.put(s, getAdventurerByName(s)));
-        return k;
+    private void dropBottle(Adventurer adventurer, InputWrapper wrapper) {
+        adventurer.dropBottle(wrapper.getInt(Indexes.OBJ_ID));
+    }
+
+    private void obtainEquipment(Adventurer adventurer, InputWrapper wrapper) {
+        adventurer.obtainEquipment(
+                wrapper.getInt(Indexes.OBJ_ID),
+                wrapper.get(Indexes.OBJ_NAME),
+                wrapper.getInt(Indexes.OBJ_ATTR)
+        );
+    }
+
+    private void dropEquipment(Adventurer adventurer, InputWrapper wrapper) {
+        adventurer.dropEquipment(wrapper.getInt(Indexes.OBJ_ID));
+    }
+
+    private void enhanceEquipment(Adventurer adventurer, InputWrapper wrapper) {
+        adventurer.enhanceEquipment(wrapper.getInt(Indexes.OBJ_ID));
+    }
+
+    private void obtainFood(Adventurer adventurer, InputWrapper wrapper) {
+        adventurer.obtainFood(
+                wrapper.getInt(Indexes.OBJ_ID),
+                wrapper.get(Indexes.OBJ_NAME),
+                wrapper.getInt(Indexes.OBJ_ATTR)
+        );
+    }
+
+    private void dropFood(Adventurer adventurer, InputWrapper wrapper) {
+        adventurer.dropFood(wrapper.getInt(Indexes.OBJ_ID));
+    }
+
+    private void fetchEquipment(Adventurer adventurer, InputWrapper wrapper) {
+        adventurer.fetchEquipment(wrapper.getInt(Indexes.OBJ_ID));
+    }
+
+    private void fetchBottle(Adventurer adventurer, InputWrapper wrapper) {
+        adventurer.fetchBottle(wrapper.getInt(Indexes.OBJ_ID));
+    }
+
+    private void fetchFood(Adventurer adventurer, InputWrapper wrapper) {
+        adventurer.fetchFood(wrapper.getInt(Indexes.OBJ_ID));
+    }
+
+    private void useBottle(Adventurer adventurer, InputWrapper wrapper) {
+        adventurer.useBottle(wrapper.get(Indexes.USE_OBJ_NAME));
+    }
+
+    private void useFood(Adventurer adventurer, InputWrapper wrapper) {
+        adventurer.useFood(wrapper.get(Indexes.USE_OBJ_NAME));
+    }
+
+    private void enterFightMode(Adventurer ignored, InputWrapper wrapper) {
+        wrapper.subList(Indexes.LOG_NAME_BEGIN).forEach(
+            s -> adventurersInFight.put(s, getAdventurerByName(s))
+        );
+    }
+
+    private void queryLogByDate(Adventurer ignored, InputWrapper wrapper) {
+        String date = wrapper.get(Indexes.QUERY_DATE);
+        if (!loggers.containsKey(date) || loggers.get(date).isEmpty()) {
+            System.out.println("No Matched Log");
+            return;
+        }
+        loggers.get(date).forEach(System.out::println);
+    }
+
+    private void queryLogByAttacker(Adventurer adventurer, InputWrapper ignored) {
+        adventurer.queryLoggerAttacker();
+    }
+
+    private void queryLogByAttackee(Adventurer adventurer, InputWrapper ignored) {
+        adventurer.queryLoggerAttackee();
     }
 
     public void clearFightMode() {
         adventurersInFight.clear();
-    }
-
-    private Pair<String, Pair<Integer, Integer>> argParserObtain(ArrayList<String> input) {
-        return new Pair<>(
-                input.get(Constants.OP_IDX_OBJ_NAME),
-                new Pair<>(
-                        Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID)),
-                        Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ATTR))
-                )
-        );
-    }
-
-    private int argParserSingleID(ArrayList<String> input) {
-        return Integer.parseInt(input.get(Constants.OP_IDX_OBJ_ID));
-    }
-
-    private String argParserSingleName(ArrayList<String> input) {
-        return input.get(Constants.OP_IDX_USE_OBJ_NAME);
     }
 
     public void dispatchLog(String log) {
@@ -252,21 +234,5 @@ public class GameManager {
             }
         }
         return null;  // Unreachable!
-    }
-
-    private void outputLogByDate(String date) {
-        if (!loggers.containsKey(date) || loggers.get(date).isEmpty()) {
-            System.out.println("No Matched Log");
-            return;
-        }
-        loggers.get(date).forEach(System.out::println);
-    }
-
-    private void queryLogByAdvId(int type, Adventurer adventurer) {
-        if (type == Constants.QUERY_LOG_ATTACK) {
-            adventurer.queryLoggerAttacker();
-        } else {
-            adventurer.queryLoggerAttackee();
-        }
     }
 }
