@@ -28,14 +28,14 @@ public class GameManagerTest {
     @Test
     public void bottleTest() {
         GameMgr.update(new ArrayList<>(Arrays.asList("1", "1001", "Link")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "2001", "HealPotion", "10")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "2002", "FirePotion", "5")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "2001", "HealPotion", "10", "100", "RegularEquipment")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "2002", "FirePotion", "5", "100", "RegularEquipment")));
         assertEquals("FirePotion", GameMgr.getAdventurers().get(1001).getBottles().get(2002).getName());
         GameMgr.update(new ArrayList<>(Arrays.asList("3", "1001", "2002")));
         assertFalse(GameMgr.getAdventurers().get(1001).getBottles().containsKey(2002));
         assertEquals(1, GameMgr.getAdventurers().get(1001).getBottles().size());
         GameMgr.update(new ArrayList<>(Arrays.asList("1", "1002", "Zelda")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "2003", "ThunderPotion", "5")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "2003", "ThunderPotion", "5", "100", "RegularEquipment")));
         assertEquals(0, GameMgr.getAdventurers().get(1002).getBottles().size());
         assertEquals(2, GameMgr.getAdventurers().get(1001).getBottles().size());
     }
@@ -44,9 +44,9 @@ public class GameManagerTest {
     public void equipmentTest() {
         GameMgr.update(new ArrayList<>(Arrays.asList("1", "1001", "Link")));
         GameMgr.update(new ArrayList<>(Arrays.asList("1", "1002", "Zelda")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1001", "3001", "Bow", "5")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1001", "3002", "Sword", "5")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1002", "3003", "Triforce", "2147483646")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1001", "3001", "Bow", "5", "100", "RegularEquipment")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1001", "3002", "Sword", "5", "100", "RegularEquipment")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1002", "3003", "Triforce", "2147483646", "100", "RegularEquipment")));
         assertEquals(2, GameMgr.getAdventurers().get(1001).getEquipments().size());
         assertEquals(1, GameMgr.getAdventurers().get(1002).getEquipments().size());
         GameMgr.update(new ArrayList<>(Arrays.asList("6", "1001", "3001")));
@@ -68,16 +68,16 @@ public class GameManagerTest {
     @Test
     public void foodTest() {
         GameMgr.update(new ArrayList<>(Arrays.asList("1", "1001", "Link")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1001", "1101", "Candy", "1")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1001", "1102", "Candy", "2")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1001", "1103", "Candy", "3")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1001", "1101", "Candy", "1", "111")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1001", "1102", "Candy", "2", "111")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1001", "1103", "Candy", "3", "111")));
         assertEquals("Candy", GameMgr.getAdventurers().get(1001).getFoods().get(1103).getName());
 
         GameMgr.update(new ArrayList<>(Arrays.asList("8", "1001", "1103")));
         assertEquals(2, GameMgr.getAdventurers().get(1001).getFoods().size());
 
         GameMgr.update(new ArrayList<>(Arrays.asList("1", "1002", "Zelda")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1001", "1109", "Candy", "9")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1001", "1109", "Candy", "9", "111")));
         assertEquals(0, GameMgr.getAdventurers().get(1002).getFoods().size());
         assertEquals(3, GameMgr.getAdventurers().get(1001).getFoods().size());
     }
@@ -86,8 +86,8 @@ public class GameManagerTest {
     public void useBottleTest() {
         GameMgr.update(new ArrayList<>(Arrays.asList("1", "1001", "Link")));
         GameMgr.update(new ArrayList<>(Arrays.asList("1", "1002", "Zelda")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "2001", "Potion", "10")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "2002", "Potion", "6")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "2001", "Potion", "10", "100", "RegularBottle")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "2002", "Potion", "6", "100", "RegularBottle")));
         GameMgr.update(new ArrayList<>(Arrays.asList("10", "1001", "2001")));
         GameMgr.getAdventurers().get(1001).enhanceLevel(10);  // max: 3 bottles
         GameMgr.update(new ArrayList<>(Arrays.asList("10", "1001", "2002")));
@@ -97,13 +97,13 @@ public class GameManagerTest {
                 2, GameMgr.getAdventurers().get(1001).getBackpack().getBottles().get("Potion").size()
         );
 
-        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1002", "2004", "Potion", "5")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1002", "2004", "Potion", "5", "100", "RegularBottle")));
         GameMgr.update(new ArrayList<>(Arrays.asList("10", "1002", "2004")));
         assertEquals(
                 2, GameMgr.getAdventurers().get(1001).getBackpack().getBottles().get("Potion").size()
         );
 
-        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "2003", "Potion", "5")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "2003", "Potion", "5", "100", "RegularBottle")));
         GameMgr.update(new ArrayList<>(Arrays.asList("10", "1001", "2003")));
         assertEquals(
                 3, GameMgr.getAdventurers().get(1001).getBackpack().getBottles().get("Potion").size()
@@ -131,7 +131,7 @@ public class GameManagerTest {
         GameMgr.update(new ArrayList<>(Arrays.asList("12", "1002", "Potion")));  // Will use 2004(5)
         assertEquals(505, GameMgr.getAdventurers().get(1002).getPower());
 
-        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1002", "2005", "Potion", "55")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1002", "2005", "Potion", "55", "100", "RegularBottle")));
         GameMgr.update(new ArrayList<>(Arrays.asList("10", "1002", "2005")));  // Fail to add
         GameMgr.update(new ArrayList<>(Arrays.asList("12", "1002", "Potion")));  // Will use 2004(0)
         assertEquals(505, GameMgr.getAdventurers().get(1002).getPower());
@@ -147,9 +147,9 @@ public class GameManagerTest {
     @Test
     public void useEquipmentTest() {
         GameMgr.update(new ArrayList<>(Arrays.asList("1", "1001", "Link")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1001", "1011", "Sword", "11")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1001", "1012", "Sword", "12")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1001", "1022", "Shield", "12")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1001", "1011", "Sword", "11", "100", "RegularEquipment")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1001", "1012", "Sword", "12", "100", "RegularEquipment")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1001", "1022", "Shield", "12", "100", "RegularEquipment")));
 
         GameMgr.update(new ArrayList<>(Arrays.asList("9", "1001", "1012")));
         assertEquals(
@@ -182,10 +182,10 @@ public class GameManagerTest {
     public void useFoodTest() {
         GameMgr.update(new ArrayList<>(Arrays.asList("1", "1001", "Link")));
         GameMgr.update(new ArrayList<>(Arrays.asList("1", "1002", "Zelda")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1001", "1101", "Candy", "1")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1002", "1102", "Candy", "2")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1002", "1112", "Milk", "12")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1001", "1103", "Candy", "3")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1001", "1101", "Candy", "1", "100", "RegularEquipment")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1002", "1102", "Candy", "2", "100", "RegularEquipment")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1002", "1112", "Milk", "12", "100", "RegularEquipment")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1001", "1103", "Candy", "3", "100", "RegularEquipment")));
 
         GameMgr.update(new ArrayList<>(Arrays.asList("11", "1001", "1103")));
         GameMgr.update(new ArrayList<>(Arrays.asList("11", "1001", "1101")));
@@ -234,8 +234,8 @@ public class GameManagerTest {
     public void comprehensiveTest3_1() {
         GameMgr.update(new ArrayList<>(Arrays.asList("1", "1001", "Link")));
         GameMgr.update(new ArrayList<>(Arrays.asList("1", "1002", "Zelda")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1001", "1101", "Sword", "100")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1002", "1102", "Shield", "99")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1001", "1101", "Sword", "100", "111", "RegularEquipment")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1002", "1102", "Shield", "99", "111", "RegularEquipment")));
 
         // Fetch the equipment
         GameMgr.update(new ArrayList<>(Arrays.asList("9", "1002", "1102")));
@@ -248,9 +248,9 @@ public class GameManagerTest {
         assertNull(GameMgr.getAdventurers().get(1002).getBackpack().getEquipments().get("Shield"));
 
         // Fetch more bottles
-        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "2001", "Potion", "10")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "2002", "Potion", "6")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "2003", "Potion", "2")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "2001", "Potion", "10", "100", "RegularBottle")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "2002", "Potion", "6", "100", "RegularBottle")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "2003", "Potion", "2", "100", "RegularBottle")));
         GameMgr.update(new ArrayList<>(Arrays.asList("10", "1001", "2002")));
         GameMgr.update(new ArrayList<>(Arrays.asList("10", "1001", "2002")));  // Duplicated
         GameMgr.update(new ArrayList<>(Arrays.asList("10", "1001", "2001")));  // More
@@ -263,9 +263,9 @@ public class GameManagerTest {
         assertEquals(506, GameMgr.getAdventurers().get(1001).getPower());
 
         // Fetch the food
-        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1001", "3001", "Candy", "11")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1001", "3002", "Candy", "22")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1001", "3003", "Candy", "33")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1001", "3001", "Candy", "11", "100", "100", "RegularEquipment")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1001", "3002", "Candy", "22", "100", "100", "RegularEquipment")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1001", "3003", "Candy", "33", "100", "100", "RegularEquipment")));
         GameMgr.update(new ArrayList<>(Arrays.asList("11", "1001", "3003")));
         GameMgr.update(new ArrayList<>(Arrays.asList("11", "1001", "3001")));
 
@@ -303,16 +303,16 @@ public class GameManagerTest {
         GameMgr.update(new ArrayList<>(Arrays.asList("1", "1003", "Adv3")));
 
         // Add bottles
-        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1002", "1101", "Bot1", "100")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1003", "1102", "Bot2", "200")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1003", "1103", "Bot3", "300")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1002", "1101", "Bot1", "100", "100", "RegularBottle")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1003", "1102", "Bot2", "200", "100", "RegularBottle")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1003", "1103", "Bot3", "300", "100", "RegularBottle")));
 
         // Fetch bottles
         GameMgr.update(new ArrayList<>(Arrays.asList("10", "1003", "1102")));
 
         // Add equipments
-        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1002", "1201", "Equ1", "10")));
-        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1002", "1202", "Equ2", "20")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1002", "1201", "Equ1", "10", "100", "RegularEquipment")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1002", "1202", "Equ2", "20", "100", "RegularEquipment")));
 
         // Fetch equipments
         GameMgr.update(new ArrayList<>(Arrays.asList("9", "1002", "1201")));
@@ -341,7 +341,7 @@ public class GameManagerTest {
         GameMgr.update(new ArrayList<>(Arrays.asList("6", "1002", "1201")));  // Star: 11
 
         // Fetch & eat food
-        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1002", "1301", "Food1", "3")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1002", "1301", "Food1", "3", "111")));
         GameMgr.update(new ArrayList<>(Arrays.asList("11", "1002", "1301")));
         GameMgr.update(new ArrayList<>(Arrays.asList("13", "1002", "Food1")));  // Level: 4
         assertEquals(4, GameMgr.getAdventurers().get(1002).getLevel());

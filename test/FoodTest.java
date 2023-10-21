@@ -9,7 +9,7 @@ public class FoodTest {
 
     @Before
     public void buildFood() {
-        food = new Food(1000, "Candy", 12);
+        food = new Food(1000, "Candy", 12, 312);
     }
 
     @Test
