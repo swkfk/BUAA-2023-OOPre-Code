@@ -1,7 +1,8 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
-public class Adventurer {
+public class Adventurer implements ICommodity {
     private final int id;
 
     private final String name;
@@ -10,6 +11,7 @@ public class Adventurer {
     private final HashMap<Integer, Equipment> equipments;
     private final HashMap<Integer, Food> foods;
     private final Backpack backpack;
+    private final HashSet<Adventurer> employees;
 
     private final ArrayList<LoggerBase> loggerAttacker;
     private final ArrayList<LoggerBase> loggerAttackee;
@@ -57,6 +59,7 @@ public class Adventurer {
         this.bottles = new HashMap<>();
         this.equipments = new HashMap<>();
         this.foods = new HashMap<>();
+        this.employees = new HashSet<>();
         this.backpack = new Backpack(this.level);
         this.loggerAttacker = new ArrayList<>();
         this.loggerAttackee = new ArrayList<>();
@@ -219,5 +222,56 @@ public class Adventurer {
             return;
         }
         loggerAttackee.forEach(System.out::println);
+    }
+
+    public void hireAdventurer(Adventurer employee) {
+        employees.add(employee);
+    }
+
+    public String queryCommodityBelongingById(int id) {
+        if (null != bottles.get(id)) {
+            return bottles.get(id).getBelonging();
+        }
+        if (null != equipments.get(id)) {
+            return equipments.get(id).getBelonging();
+        }
+        if (null != foods.get(id)) {
+            return foods.get(id).getBelonging();
+        }
+        for (Adventurer adv : employees) {
+            if (adv.getId() == id) {
+                return adv.getBelonging();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String getBelonging() {
+        return "Adventurer";
+    }
+
+    @Override
+    public long getCommodity() {
+        final long[] res = {0};
+        // 如果只是 long 的话，传给 lambda 是值传递，因此要求 final 修饰，以确保程序员知晓
+        bottles.values().forEach(o -> res[0] += o.getCommodity());
+        equipments.values().forEach(o -> res[0] += o.getCommodity());
+        foods.values().forEach(o -> res[0] += o.getCommodity());
+        employees.forEach((o) -> res[0] += o.getCommodity());
+        return res[0];
+    }
+
+    public int countCommodity() {
+        return bottles.size() + equipments.size() + foods.size() + employees.size();
+    }
+
+    public long maxCommodity() {
+        final long[] res = {0};
+        bottles.values().forEach(o -> res[0] = Math.max(res[0], o.getCommodity()));
+        equipments.values().forEach(o -> res[0] = Math.max(res[0], o.getCommodity()));
+        foods.values().forEach(o -> res[0] = Math.max(res[0], o.getCommodity()));
+        employees.forEach(o -> res[0] = Math.max(res[0], o.getCommodity()));
+        return res[0];
     }
 }

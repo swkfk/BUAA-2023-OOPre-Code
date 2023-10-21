@@ -10,4 +10,9 @@ public class EquipmentEpic extends Equipment {
     public int getDamage(int victimPower) {
         return (int) (ratio * victimPower);
     }
+
+    @Override
+    public String getBelonging() {
+        return "EpicEquipment";
+    }
 }

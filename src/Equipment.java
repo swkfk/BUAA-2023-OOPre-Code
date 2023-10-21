@@ -1,4 +1,4 @@
-public class Equipment {
+public class Equipment implements ICommodity {
     private final int id;
     private final String name;
     private int star;
@@ -25,5 +25,15 @@ public class Equipment {
 
     public int getDamage(int level) {
         return star * level;
+    }
+
+    @Override
+    public String getBelonging() {
+        return null;
+    }
+
+    @Override
+    public long getCommodity() {
+        return price;
     }
 }

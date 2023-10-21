@@ -40,7 +40,11 @@ public class GameManager {
                 /* 14 */ this::enterFightMode,
                 /* 15 */ this::queryLogByDate,
                 /* 16 */ this::queryLogByAttacker,
-                /* 17 */ this::queryLogByAttackee
+                /* 17 */ this::queryLogByAttackee,
+                /* 18 */ this::hireAdventurer,
+                /* 19 */ this::countCommodity,
+                /* 20 */ this::maxCommodity,
+                /* 21 */ this::queryCommodityById
         );
     }
 
@@ -189,6 +193,27 @@ public class GameManager {
 
     private void queryLogByAttackee(Adventurer adventurer, InputWrapper ignored) {
         adventurer.queryLoggerAttackee();
+    }
+
+    private void hireAdventurer(Adventurer adventurer, InputWrapper wrapper) {
+        Adventurer employee = adventurers.get(wrapper.getInt(Indexes.ADV_2_ID));
+        adventurer.hireAdventurer(employee);
+    }
+
+    private void countCommodity(Adventurer adventurer, InputWrapper ignored) {
+        long sumCommodity = adventurer.getCommodity();
+        int countCommodity = adventurer.countCommodity();
+        System.out.println(countCommodity + " " + sumCommodity);
+    }
+
+    private void maxCommodity(Adventurer adventurer, InputWrapper ignored) {
+        System.out.println(adventurer.maxCommodity());
+    }
+
+    private void queryCommodityById(Adventurer adventurer, InputWrapper wrapper) {
+        int comId = wrapper.getInt(Indexes.COM_ID);
+        String belonging = adventurer.queryCommodityBelongingById(comId);
+        System.out.println("Commodity whose id is " + comId + " belongs to " + belonging);
     }
 
     public void clearFightMode() {

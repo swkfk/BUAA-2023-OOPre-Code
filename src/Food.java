@@ -1,4 +1,4 @@
-public class Food {
+public class Food implements ICommodity {
     private final int id;
     private final String name;
     private final int energy;
@@ -17,5 +17,15 @@ public class Food {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getBelonging() {
+        return "Food";
+    }
+
+    @Override
+    public long getCommodity() {
+        return price;
     }
 }

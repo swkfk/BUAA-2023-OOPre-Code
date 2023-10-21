@@ -1,4 +1,4 @@
-public class Bottle {
+public class Bottle implements ICommodity {
     private final int id;
     private final String name;
     private int capacity;
@@ -25,5 +25,15 @@ public class Bottle {
 
     public int getRecovery(int ignored) {
         return capacity;
+    }
+
+    @Override
+    public String getBelonging() {
+        return null;
+    }
+
+    @Override
+    public long getCommodity() {
+        return price;
     }
 }

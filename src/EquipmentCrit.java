@@ -10,4 +10,9 @@ public class EquipmentCrit extends Equipment {
     public int getDamage(int level) {
         return getStar() * level + critical;
     }
+
+    @Override
+    public String getBelonging() {
+        return "CritEquipment";
+    }
 }

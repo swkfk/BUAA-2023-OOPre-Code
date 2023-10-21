@@ -14,4 +14,9 @@ public class BottleRecover extends Bottle {
             return 0;
         }
     }
+
+    @Override
+    public String getBelonging() {
+        return "RecoverBottle";
+    }
 }

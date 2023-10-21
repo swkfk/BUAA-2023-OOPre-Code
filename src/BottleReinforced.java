@@ -10,4 +10,9 @@ public class BottleReinforced extends Bottle {
     public int getRecovery(int ignored) {
         return (int) ((1 + ratio) * getCapacity());
     }
+
+    @Override
+    public String getBelonging() {
+        return "ReinforcedBottle";
+    }
 }
