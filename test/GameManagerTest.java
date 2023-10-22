@@ -321,6 +321,7 @@ public class GameManagerTest {
         GameMgr.update(new ArrayList<>(Arrays.asList("14", "2", "5", "Adv2", "Adv3")));
         GameMgr.dispatchLog("2000/01-Adv2-Bot3");  // Fail to use
         GameMgr.dispatchLog("2000/01-Adv3-Bot2");  // Power: 500 -> 700
+        GameMgr.dispatchLog("2000/01-Adv4-Bot2");  // Not exist
         GameMgr.dispatchLog("2000/02-Adv2@#-Equ2");  // Fail to use
         assertEquals(700, GameMgr.getAdventurers().get(1003).getPower());
         GameMgr.dispatchLog("2000/02-Adv2@#-Equ1");  // Do harm: 10
@@ -350,7 +351,30 @@ public class GameManagerTest {
         GameMgr.update(new ArrayList<>(Arrays.asList("14", "3", "2", "Adv2", "Adv3", "Adv1")));
         GameMgr.dispatchLog("2002/02-Adv2@#-Equ1");  // Harm: 44
         GameMgr.dispatchLog("2002/02-Adv2@Adv1-Equ1");  // Harm: 44
+        GameMgr.dispatchLog("2002/02-Adv2@Adv1-Equ");  // Not exist
+        GameMgr.dispatchLog("2002/02-Adv4@Adv1-Equ1");  // Not exist
+        GameMgr.dispatchLog("2002/02-Adv4@#-Equ1");  // Not exist
         assertEquals(412, GameMgr.getAdventurers().get(1001).getPower());
         assertEquals(646, GameMgr.getAdventurers().get(1003).getPower());
+    }
+
+    @Test
+    public void comprehensiveTest_6_commodity() {
+        // Add adventurers
+        GameMgr.update(new ArrayList<>(Arrays.asList("1", "1001", "Adv1")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("1", "1002", "Adv2")));
+
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "1101", "Bot01", "100", "101", "RegularBottle")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "1102", "Bot02", "100", "102", "ReinforcedBottle", "0.3")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "1103", "Bot03", "100", "103", "RecoverBottle", "0.8")));
+
+        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1001", "1201", "Equ01", "100", "101", "RegularEquipment")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1001", "1202", "Equ02", "100", "102", "EpicEquipment", "0.3")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1001", "1203", "Equ03", "100", "103", "CritEquipment", "80")));
+
+        GameMgr.update(new ArrayList<>(Arrays.asList("18", "1001", "1002")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("19", "1001")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("20", "1002")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("21", "1001", "1103")));
     }
 }
