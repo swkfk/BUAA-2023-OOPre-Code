@@ -21,4 +21,14 @@ public class FoodTest {
     public void getName() {
         assertEquals("Candy", food.getName());
     }
+
+    @Test
+    public void getBelonging() {
+        assertEquals("Food", food.getBelonging());
+    }
+
+    @Test
+    public void getCommodity() {
+        assertEquals(312, food.getCommodity());
+    }
 }

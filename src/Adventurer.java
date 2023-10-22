@@ -51,6 +51,10 @@ public class Adventurer implements ICommodity {
         return level;
     }
 
+    public HashSet<Adventurer> getEmployees() {
+        return employees;
+    }
+
     public Adventurer(int id, String name) {
         this.id = id;
         this.name = name;

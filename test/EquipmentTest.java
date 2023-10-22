@@ -19,4 +19,9 @@ public class EquipmentTest {
         }
         assertEquals(110, equipment.getStar());
     }
+
+    @Test
+    public void getBelonging() {
+        assertNull(new Equipment(1, "equ", 10, 111).getBelonging());
+    }
 }

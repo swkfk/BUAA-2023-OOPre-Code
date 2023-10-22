@@ -23,4 +23,9 @@ public class BottleTest {
         bottle.clearCapacity();
         assertEquals(0, bottle.getCapacity());
     }
+
+    @Test
+    public void getBelonging() {
+        assertNull(new Bottle(1000, "bot", 1, 1).getBelonging());
+    }
 }

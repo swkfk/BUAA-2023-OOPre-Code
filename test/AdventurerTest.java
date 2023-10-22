@@ -1,4 +1,3 @@
-import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -219,5 +218,144 @@ public class AdventurerTest {
         assertEquals(12, adventurer.getLevel());
         adventurer.useFood("Candy");
         assertEquals(15, adventurer.getLevel());
+    }
+
+    @Test
+    public void useEquipmentInFightUpd() {
+        adventurer.obtainEquipment(1100, new EquipmentRegular(1100, "Regular", 10, 100));
+        adventurer.obtainEquipment(1101, new EquipmentEpic(1101, "Epic", 10, 100, 0.7));
+        adventurer.obtainEquipment(1102, new EquipmentCrit(1102, "Crit", 10, 100, 100));
+
+        adventurer.fetchEquipment(1100);
+        adventurer.fetchEquipment(1101);
+        adventurer.fetchEquipment(1102);
+
+        assertEquals(10, adventurer.useEquipmentInFight("Regular", 1000));
+        assertEquals(77, adventurer.useEquipmentInFight("Epic", 111));
+        assertEquals(110, adventurer.useEquipmentInFight("Crit", 1000));
+
+        adventurer.enhanceEquipment(1101);
+        assertEquals(77, adventurer.useEquipmentInFight("Epic", 111));
+    }
+
+    @Test
+    public void useBottleInFightUpd() {
+        adventurer.obtainBottle(1100, new BottleRegular(1100, "Regular", 100, 1000));
+        adventurer.obtainBottle(1101, new BottleRecover(1101, "Recover", 100, 1000, 0.77));
+        adventurer.obtainBottle(1102, new BottleReinforced(1102, "Reinforced", 100, 1000, 0.66));
+
+        adventurer.fetchBottle(1100);
+        assertEquals(500, adventurer.getPower());
+        adventurer.useBottle("Regular");
+        assertEquals(600, adventurer.getPower());
+
+        adventurer.fetchBottle(1101);
+        adventurer.useBottle("Recover");
+        assertEquals(1062, adventurer.getPower());
+        adventurer.useBottle("Recover");
+        assertEquals(1062, adventurer.getPower());
+
+        adventurer.fetchBottle(1102);
+        adventurer.useBottle("Reinforced");
+        assertEquals(1228, adventurer.getPower());
+        adventurer.useBottle("Reinforced");
+        assertEquals(1228, adventurer.getPower());
+    }
+
+    @Test
+    public void hireAdventurer() {
+        Adventurer adv1 = new Adventurer(1001, "other");
+        Adventurer adv2 = new Adventurer(1001, "other");
+        adventurer.hireAdventurer(adv1);
+        adventurer.hireAdventurer(adv1);
+        adventurer.hireAdventurer(adv2);
+        adventurer.hireAdventurer(adv1);
+        assertEquals(2, adventurer.getEmployees().size());
+    }
+
+    @Test
+    public void queryCommodityBelongingById() {
+        Adventurer adv1 = new Adventurer(1001, "other1");
+        adventurer.hireAdventurer(adv1);
+
+        Bottle bot1 = new BottleRegular(1101, "bot1", 10, 100);
+        adventurer.obtainBottle(1101, bot1);
+        Bottle bot2 = new BottleReinforced(1102, "bot2", 10, 100, 0.3);
+        adventurer.obtainBottle(1102, bot2);
+        Bottle bot3 = new BottleRecover(1103, "bot3", 10, 100, 0.4);
+        adventurer.obtainBottle(1103, bot3);
+
+        Equipment equ = new EquipmentRegular(1201, "equ1", 10, 101);
+        adventurer.obtainEquipment(1201, equ);
+        Equipment equ2 = new EquipmentCrit(1202, "equ2", 10, 101, 100);
+        adventurer.obtainEquipment(1202, equ2);
+        Equipment equ3 = new EquipmentEpic(1203, "equ3", 10, 101, 0.4);
+        adventurer.obtainEquipment(1203, equ3);
+
+        Food food = new Food(1301, "food", 10, 201);
+        adventurer.obtainFood(1301, food);
+
+        assertEquals("Adventurer", adventurer.queryCommodityBelongingById(1001));
+        assertEquals("Food", adventurer.queryCommodityBelongingById(1301));
+        assertEquals("RegularBottle", adventurer.queryCommodityBelongingById(1101));
+        assertEquals("ReinforcedBottle", adventurer.queryCommodityBelongingById(1102));
+        assertEquals("RecoverBottle", adventurer.queryCommodityBelongingById(1103));
+        assertEquals("RegularEquipment", adventurer.queryCommodityBelongingById(1201));
+        assertEquals("CritEquipment", adventurer.queryCommodityBelongingById(1202));
+        assertEquals("EpicEquipment", adventurer.queryCommodityBelongingById(1203));
+
+        assertNull(adventurer.queryCommodityBelongingById(1000));
+    }
+
+    @Test
+    public void getCommodity() {
+        Adventurer adv1 = new Adventurer(1001, "other1");
+        Adventurer adv2 = new Adventurer(1002, "other2");
+        adv1.hireAdventurer(adv2);
+        adventurer.hireAdventurer(adv1);
+        adventurer.hireAdventurer(adv2);
+        adventurer.hireAdventurer(adv2);
+
+        Bottle bot = new Bottle(1101, "bot", 10, 100);
+        adv2.obtainBottle(1101, bot);
+        assertEquals(200, adventurer.getCommodity());
+        assertEquals(100, adv1.getCommodity());
+        assertEquals(100, adv1.getCommodity());
+        assertEquals(2, adventurer.countCommodity());
+
+        Equipment equ = new Equipment(1201, "equ", 10, 101);
+        adv1.obtainEquipment(1201, equ);
+        assertEquals(301, adventurer.getCommodity());
+        assertEquals(201, adv1.getCommodity());
+        assertEquals(100, adv2.getCommodity());
+        assertEquals(2, adv1.countCommodity());
+
+        Food food = new Food(1301, "food", 10, 201);
+        adventurer.obtainFood(1301, food);
+        assertEquals(502, adventurer.getCommodity());
+        assertEquals(201, adv1.getCommodity());
+        assertEquals(100, adv2.getCommodity());
+        assertEquals(3, adventurer.countCommodity());
+    }
+
+    @Test
+    public void maxCommodity() {
+        Adventurer adv1 = new Adventurer(1001, "other1");
+        Adventurer adv2 = new Adventurer(1002, "other2");
+        adventurer.hireAdventurer(adv1);
+        adv1.hireAdventurer(adv2);
+        assertEquals(0, adventurer.maxCommodity());
+
+        Bottle bot = new Bottle(1101, "bot", 10, 10);
+        adv2.obtainBottle(1101, bot);
+        assertEquals(10, adventurer.maxCommodity());
+
+        Equipment equ = new Equipment(1201, "equ", 10, 101);
+        adventurer.obtainEquipment(1201, equ);
+        assertEquals(101, adventurer.maxCommodity());
+
+        Food food = new Food(1301, "food", 10, 201);
+        adv1.obtainFood(1301, food);
+        assertEquals(211, adventurer.maxCommodity());
     }
 }
