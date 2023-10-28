@@ -28,4 +28,9 @@ public class Food implements ICommodity {
     public long getCommodity() {
         return price;
     }
+
+    @Override
+    public int getAttribute() {
+        return energy;
+    }
 }

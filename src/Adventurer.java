@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.PriorityQueue;
 
 public class Adventurer implements ICommodity {
     private final int id;
@@ -18,6 +19,7 @@ public class Adventurer implements ICommodity {
 
     private int level;
     private int power;
+    private long money;
 
     public int getId() {
         return id;
@@ -60,6 +62,7 @@ public class Adventurer implements ICommodity {
         this.name = name;
         this.level = 1;
         this.power = 500;
+        this.money = 0;
         this.bottles = new HashMap<>();
         this.equipments = new HashMap<>();
         this.foods = new HashMap<>();
@@ -77,12 +80,14 @@ public class Adventurer implements ICommodity {
         dropBottle(botID, true);
     }
 
-    public void dropBottle(int botID, boolean isPrint) {
-        String name = bottles.get(botID).getName();
-        bottles.remove(botID);
+    public void dropBottle(int botID, boolean isSold) {
+        Bottle toBeDropped = bottles.get(botID);
+        String name = toBeDropped.getName();
+        bottles.remove(botID, toBeDropped);
         backpack.dropBottle(name, botID);
-        if (isPrint) {
+        if (isSold) {
             System.out.println(bottles.size() + " " + name);
+            money += SingletonShop.getInstance().stockBottle(toBeDropped);
         }
     }
 
@@ -99,11 +104,15 @@ public class Adventurer implements ICommodity {
         equipments.put(equId, equipment);
     }
 
-    public void dropEquipment(int equID) {
-        String name = equipments.get(equID).getName();
-        equipments.remove(equID);
+    public void dropEquipment(int equID, boolean isSold) {
+        Equipment toBeDropped = equipments.get(equID);
+        String name = toBeDropped.getName();
+        equipments.remove(equID, toBeDropped);
         backpack.dropEquipment(name, equID);
-        System.out.println(equipments.size() + " " + name);
+        if (isSold) {
+            System.out.println(equipments.size() + " " + name);
+            money += SingletonShop.getInstance().stockEquipment(toBeDropped);
+        }
     }
 
     public void fetchEquipment(int equID) {
@@ -129,12 +138,14 @@ public class Adventurer implements ICommodity {
         dropFood(foodID, true);
     }
 
-    public void dropFood(int foodID, boolean isPrint) {
-        String name = foods.get(foodID).getName();
-        foods.remove(foodID);
+    public void dropFood(int foodID, boolean isSold) {
+        Food toBeDropped = foods.get(foodID);
+        String name = toBeDropped.getName();
+        foods.remove(foodID, toBeDropped);
         backpack.dropFood(name, foodID);
-        if (isPrint) {
+        if (isSold) {
             System.out.println(foods.size() + " " + name);
+            money += SingletonShop.getInstance().stockFood(toBeDropped);
         }
     }
 
@@ -266,6 +277,11 @@ public class Adventurer implements ICommodity {
         return res[0];
     }
 
+    @Override
+    public int getAttribute() {
+        return 0;
+    }
+
     public int countCommodity() {
         return bottles.size() + equipments.size() + foods.size() + employees.size();
     }
@@ -277,5 +293,29 @@ public class Adventurer implements ICommodity {
         foods.values().forEach(o -> res[0] = Math.max(res[0], o.getCommodity()));
         employees.forEach(o -> res[0] = Math.max(res[0], o.getCommodity()));
         return res[0];
+    }
+
+    public void sellAll() {
+        long moneyEarned = 0;
+        for (PriorityQueue<Integer> botQueue: backpack.getBottles().values()) {
+            for (Integer botId : botQueue) {
+                moneyEarned += SingletonShop.getInstance().stockBottle(bottles.get(botId));
+                // `isSold` is false in that the sold action happened before this line
+                dropBottle(botId, false);
+            }
+        }
+        for (Integer equId: backpack.getEquipments().values()) {
+            moneyEarned += SingletonShop.getInstance().stockBottle(bottles.get(equId));
+            dropEquipment(equId, false);
+        }
+        for (PriorityQueue<Integer> foodQueue : backpack.getFoods().values()) {
+            for (Integer foodId : foodQueue) {
+                moneyEarned += SingletonShop.getInstance().stockFood(foods.get(foodId));
+                dropFood(foodId, false);
+            }
+        }
+        backpack.clear();
+        this.money += moneyEarned;
+        System.out.println(this.name + " emptied the backpack " + moneyEarned);
     }
 }

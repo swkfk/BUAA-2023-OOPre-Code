@@ -2,9 +2,11 @@ public class Bottle implements ICommodity {
     private final int id;
     private final String name;
     private int capacity;
+    private final int volumn;
     private final long price;
 
     public Bottle(int id, String name, int capacity, long price) {
+        this.volumn = capacity;
         this.capacity = capacity;
         this.name = name;
         this.id = id;
@@ -35,5 +37,10 @@ public class Bottle implements ICommodity {
     @Override
     public long getCommodity() {
         return price;
+    }
+
+    @Override
+    public int getAttribute() {
+        return volumn;
     }
 }

@@ -36,4 +36,9 @@ public class Equipment implements ICommodity {
     public long getCommodity() {
         return price;
     }
+
+    @Override
+    public int getAttribute() {
+        return star;
+    }
 }

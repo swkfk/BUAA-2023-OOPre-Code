@@ -128,7 +128,7 @@ public class GameManager {
     }
 
     private void dropEquipment(Adventurer adventurer, InputWrapper wrapper) {
-        adventurer.dropEquipment(wrapper.getInt(Indexes.OBJ_ID));
+        adventurer.dropEquipment(wrapper.getInt(Indexes.OBJ_ID), true);
     }
 
     private void enhanceEquipment(Adventurer adventurer, InputWrapper wrapper) {
