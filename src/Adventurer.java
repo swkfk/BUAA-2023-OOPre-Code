@@ -19,6 +19,7 @@ public class Adventurer implements ICommodity {
 
     private int level;
     private int power;
+    private int powerBefore;
     private long money;
 
     public int getId() {
@@ -342,6 +343,24 @@ public class Adventurer implements ICommodity {
                 this.obtainFood(id, toBuy);
                 System.out.println("successfully buy " + name + " for " + toBuy.getCommodity());
             }
+        }
+    }
+
+    public long helpEmployer(int powerLoss) {
+        long moneyNeeded = (long)10000 * powerLoss;
+        long moneyGiveOut = Math.min(moneyNeeded, this.money);
+        this.money -= moneyGiveOut;
+        return moneyGiveOut;
+    }
+
+    public void enterFightMode() {
+        this.powerBefore = power;
+    }
+
+    public void leaveFightMode() {
+        if (power <= powerBefore / 2) {
+            int powerLoss = powerBefore - power;
+            employees.forEach(adventurer -> this.money += adventurer.helpEmployer(powerLoss));
         }
     }
 }

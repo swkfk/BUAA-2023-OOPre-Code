@@ -174,7 +174,14 @@ public class GameManager {
     private void enterFightMode(Adventurer ignored, InputWrapper wrapper) {
         System.out.println("Enter Fight Mode");
         wrapper.subList(Indexes.LOG_NAME_BEGIN).forEach(
-            s -> adventurersInFight.put(s, getAdventurerByName(s))
+            s -> {
+                Adventurer adventurer = getAdventurerByName(s);
+                if (adventurer == null) {
+                    return;
+                }
+                adventurer.enterFightMode();
+                adventurersInFight.put(s, adventurer);
+            }
         );
     }
 
@@ -217,6 +224,10 @@ public class GameManager {
     }
 
     public void clearFightMode() {
+        if (adventurersInFight.isEmpty()) {
+            return;
+        }
+        adventurersInFight.forEach((s, adventurer) -> adventurer.leaveFightMode());
         adventurersInFight.clear();
     }
 
