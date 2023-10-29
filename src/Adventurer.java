@@ -322,27 +322,46 @@ public class Adventurer implements ICommodity {
     }
 
     public void buyThing(int id, String name, String type, String other) {
+        boolean bought = false;
+        long price;
         if (type.contains("Bottle")) {
             Bottle toBuy = SingletonShop.getInstance().sellBottle(id, name, type, other);
-            if (toBuy != null && toBuy.getCommodity() <= this.money) {
-                this.money -= toBuy.getCommodity();
+            if (toBuy == null) {
+                return;
+            }
+            price = toBuy.getCommodity();
+            if (price <= this.money) {
+                this.money -= price;
                 this.obtainBottle(id, toBuy);
-                System.out.println("successfully buy " + name + " for " + toBuy.getCommodity());
+                bought = true;
             }
         } else if (type.contains("Equipment")) {
             Equipment toBuy = SingletonShop.getInstance().sellEquipment(id, name, type, other);
-            if (toBuy != null && toBuy.getCommodity() <= this.money) {
-                this.money -= toBuy.getCommodity();
+            if (toBuy == null) {
+                return;
+            }
+            price = toBuy.getCommodity();
+            if (price <= this.money) {
+                this.money -= price;
                 this.obtainEquipment(id, toBuy);
-                System.out.println("successfully buy " + name + " for " + toBuy.getCommodity());
+                bought = true;
             }
         } else {
             Food toBuy = SingletonShop.getInstance().sellFood(id, name, type, other);
-            if (toBuy != null && toBuy.getCommodity() <= this.money) {
-                this.money -= toBuy.getCommodity();
-                this.obtainFood(id, toBuy);
-                System.out.println("successfully buy " + name + " for " + toBuy.getCommodity());
+            if (toBuy == null) {
+                return;
             }
+            price = toBuy.getCommodity();
+            if (price <= this.money) {
+                this.money -= price;
+                this.obtainFood(id, toBuy);
+                bought = true;
+            }
+        }
+        if (bought) {
+            System.out.println("successfully buy " + name + " for " + price);
+        } else {
+            System.out.println("failed to buy " + name + " for " + price);
         }
     }
 
