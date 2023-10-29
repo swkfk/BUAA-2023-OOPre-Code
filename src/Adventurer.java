@@ -307,7 +307,7 @@ public class Adventurer implements ICommodity {
             }
         }
         for (Integer equId: backpack.getEquipments().values()) {
-            moneyEarned += SingletonShop.getInstance().stockBottle(bottles.get(equId));
+            moneyEarned += SingletonShop.getInstance().stockEquipment(equipments.get(equId));
             dropEquipment(equId, false);
         }
         for (PriorityQueue<Integer> foodQueue : backpack.getFoods().values()) {
@@ -381,5 +381,9 @@ public class Adventurer implements ICommodity {
             int powerLoss = powerBefore - power;
             employees.forEach(adventurer -> this.money += adventurer.helpEmployer(powerLoss));
         }
+    }
+
+    public long getMoney() {
+        return money;
     }
 }

@@ -210,7 +210,7 @@ public class GameManager {
     }
 
     private void countCommodity(Adventurer adventurer, InputWrapper ignored) {
-        long sumCommodity = adventurer.getCommodity();
+        long sumCommodity = adventurer.getCommodity() - adventurer.getMoney();
         int countCommodity = adventurer.countCommodity();
         System.out.println(countCommodity + " " + sumCommodity);
     }
