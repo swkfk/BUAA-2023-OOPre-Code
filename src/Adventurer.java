@@ -274,6 +274,7 @@ public class Adventurer implements ICommodity {
         equipments.values().forEach(o -> res[0] += o.getCommodity());
         foods.values().forEach(o -> res[0] += o.getCommodity());
         employees.forEach((o) -> res[0] += o.getCommodity());
+        res[0] += this.money;
         return res[0];
     }
 
