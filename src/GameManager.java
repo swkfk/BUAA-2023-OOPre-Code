@@ -44,7 +44,9 @@ public class GameManager {
                 /* 18 */ this::hireAdventurer,
                 /* 19 */ this::countCommodity,
                 /* 20 */ this::maxCommodity,
-                /* 21 */ this::queryCommodityById
+                /* 21 */ this::queryCommodityById,
+                /* 22 */ this::adventurerSellAll,
+                /* 23 */ this::adventurerBuyThing
         );
     }
 
@@ -221,6 +223,19 @@ public class GameManager {
         int comId = wrapper.getInt(Indexes.COM_ID);
         String belonging = adventurer.queryCommodityBelongingById(comId);
         System.out.println("Commodity whose id is " + comId + " belongs to " + belonging);
+    }
+
+    private void adventurerSellAll(Adventurer adventurer, InputWrapper ignored) {
+        adventurer.sellAll();
+    }
+
+    private void adventurerBuyThing(Adventurer adventurer, InputWrapper wrapper) {
+        adventurer.buyThing(
+                wrapper.getInt(Indexes.BUY_ID),
+                wrapper.get(Indexes.BUY_NAME),
+                wrapper.get(Indexes.BUY_TYPE),
+                wrapper.get(Indexes.BUY_OTHER)  // @Nullable
+        );
     }
 
     public void clearFightMode() {

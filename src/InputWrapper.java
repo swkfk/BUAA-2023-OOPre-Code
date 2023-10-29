@@ -21,7 +21,11 @@ public class InputWrapper {
     }
 
     public String get(int idx) {
-        return input.get(idx);
+        try {
+            return input.get(idx);
+        } catch (IndexOutOfBoundsException e) {
+            return null;
+        }
     }
 
     public List<String> subList(int start) {

@@ -18,4 +18,8 @@ public class Indexes {
     public static final int QUERY_DATE = 1;
     public static final int ADV_2_ID = 2;
     public static final int COM_ID = 2;
+    public static final int BUY_ID = 2;
+    public static final int BUY_NAME = 3;
+    public static final int BUY_TYPE = 4;
+    public static final int BUY_OTHER = 5;
 }
