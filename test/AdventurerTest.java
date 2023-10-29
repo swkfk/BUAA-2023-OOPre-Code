@@ -42,7 +42,7 @@ public class AdventurerTest {
         adventurer.fetchEquipment(1002);
         assertTrue(adventurer.checkEquipment("armor"));
         assertFalse(adventurer.checkEquipment("Armor"));
-        adventurer.dropEquipment(1002);
+        adventurer.dropEquipment(1002, true);
         assertFalse(adventurer.checkEquipment("armor"));
     }
 
@@ -90,7 +90,7 @@ public class AdventurerTest {
     public void obtainEquipment() {
         adventurer.obtainEquipment(1101, new Equipment(1101, "Helmet", 5, 111));
         assertEquals(1, adventurer.getEquipments().size());
-        adventurer.dropEquipment(1101);
+        adventurer.dropEquipment(1101, true);
         assertEquals(0, adventurer.getEquipments().size());
         adventurer.obtainEquipment(1102, new Equipment(1102, "Armor", 10, 222));
         assertEquals(1, adventurer.getEquipments().size());
