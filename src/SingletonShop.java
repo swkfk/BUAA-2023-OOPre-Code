@@ -68,7 +68,7 @@ public class SingletonShop {
         return null;
     }
 
-    public Food sellFood(int id, String name, String type, String other) {
+    public Food sellFood(int id, String name, String type, String ignored) {
         if (type.equals("Food")) {
             return new Food(id, name, foodLog.getAttribute(), foodLog.getPrice());
         }

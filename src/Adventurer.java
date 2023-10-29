@@ -318,4 +318,29 @@ public class Adventurer implements ICommodity {
         this.money += moneyEarned;
         System.out.println(this.name + " emptied the backpack " + moneyEarned);
     }
+
+    public void buyThing(int id, String name, String type, String other) {
+        if (type.contains("Bottle")) {
+            Bottle toBuy = SingletonShop.getInstance().sellBottle(id, name, type, other);
+            if (toBuy != null && toBuy.getCommodity() <= this.money) {
+                this.money -= toBuy.getCommodity();
+                this.obtainBottle(id, toBuy);
+                System.out.println("successfully buy " + name + " for " + toBuy.getCommodity());
+            }
+        } else if (type.contains("Equipment")) {
+            Equipment toBuy = SingletonShop.getInstance().sellEquipment(id, name, type, other);
+            if (toBuy != null && toBuy.getCommodity() <= this.money) {
+                this.money -= toBuy.getCommodity();
+                this.obtainEquipment(id, toBuy);
+                System.out.println("successfully buy " + name + " for " + toBuy.getCommodity());
+            }
+        } else {
+            Food toBuy = SingletonShop.getInstance().sellFood(id, name, type, other);
+            if (toBuy != null && toBuy.getCommodity() <= this.money) {
+                this.money -= toBuy.getCommodity();
+                this.obtainFood(id, toBuy);
+                System.out.println("successfully buy " + name + " for " + toBuy.getCommodity());
+            }
+        }
+    }
 }
