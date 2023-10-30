@@ -101,10 +101,4 @@ public class Backpack {
     public static int levelToCapacity(int level) {
         return level / 5 + 1;
     }
-
-    public void clear() {
-        bottles.clear();
-        equipments.clear();
-        foods.clear();
-    }
 }

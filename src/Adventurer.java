@@ -299,24 +299,29 @@ public class Adventurer implements ICommodity {
 
     public void sellAll() {
         long moneyEarned = 0;
+        HashSet<Integer> toBeRemovedBottle = new HashSet<>();
+        HashSet<Integer> toBeRemovedEquipment = new HashSet<>();
+        HashSet<Integer> toBeRemovedFood = new HashSet<>();
         for (PriorityQueue<Integer> botQueue: backpack.getBottles().values()) {
             for (Integer botId : botQueue) {
                 moneyEarned += SingletonShop.getInstance().stockBottle(bottles.get(botId));
-                // `isSold` is false in that the sold action happened before this line
-                dropBottle(botId, false);
+                toBeRemovedBottle.add(botId);
             }
         }
         for (Integer equId: backpack.getEquipments().values()) {
             moneyEarned += SingletonShop.getInstance().stockEquipment(equipments.get(equId));
-            dropEquipment(equId, false);
+            toBeRemovedEquipment.add(equId);
         }
         for (PriorityQueue<Integer> foodQueue : backpack.getFoods().values()) {
             for (Integer foodId : foodQueue) {
                 moneyEarned += SingletonShop.getInstance().stockFood(foods.get(foodId));
-                dropFood(foodId, false);
+                toBeRemovedFood.add(foodId);
             }
         }
-        backpack.clear();
+        // `isSold` is false in that the sold action happened when adding the money
+        toBeRemovedBottle.forEach(id -> dropBottle(id, false));
+        toBeRemovedEquipment.forEach(id -> dropEquipment(id, false));
+        toBeRemovedFood.forEach(id -> dropFood(id, false));
         this.money += moneyEarned;
         System.out.println(this.name + " emptied the backpack " + moneyEarned);
     }
