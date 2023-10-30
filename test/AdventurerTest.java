@@ -1,6 +1,8 @@
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.PriorityQueue;
+
 import static org.junit.Assert.*;
 
 public class AdventurerTest {
@@ -357,5 +359,117 @@ public class AdventurerTest {
         Food food = new Food(1301, "food", 10, 201);
         adv1.obtainFood(1301, food);
         assertEquals(211, adventurer.maxCommodity());
+    }
+
+    @Test
+    public void shopInteractionTest() {
+        SingletonShop.clear();
+        adventurer.sellAll();
+        assertEquals(0, adventurer.getMoney());
+
+        adventurer.obtainFood(1000, new Food(2001, "Food1", 10, 100));
+        adventurer.useFood("Food1");
+        adventurer.sellAll();
+        assertEquals(0, adventurer.getMoney());
+        adventurer.fetchFood(1000);
+        adventurer.sellAll();
+        assertEquals(100, adventurer.getMoney());
+
+        adventurer.obtainBottle(2002, new BottleReinforced(2002, "Bot1", 100, 2147483647, 0.123));
+        adventurer.obtainBottle(2012, new BottleReinforced(2012, "Bot2", 100, 2, 0.123));
+        adventurer.obtainEquipment(2003, new EquipmentRegular(2003, "Equ1", 321, 12345));
+        adventurer.enhanceLevel(123);
+        adventurer.fetchBottle(2002);
+        adventurer.fetchBottle(2012);
+        adventurer.fetchEquipment(2003);
+        adventurer.sellAll();
+        assertEquals(2147496094L, adventurer.getMoney());
+
+        adventurer.buyThing(1111, "BotBuy", "ReinforcedBottle", "0.321");  // 1073741824
+        adventurer.buyThing(2222, "FoodBuy", "Food", null);  // 100
+        adventurer.buyThing(3333, "EquBut", "RegularEquipment", null);  // 12345
+        assertEquals(1073741824, adventurer.getBottles().get(1111).getCommodity());
+        assertEquals(100, adventurer.getFoods().get(2222).getCommodity());
+        assertEquals(12345, adventurer.getEquipments().get(3333).getCommodity());
+        assertEquals(1073741825, adventurer.getMoney());
+
+        for (PriorityQueue<Integer> pq : adventurer.getBackpack().getBottles().values()) {
+            assertTrue(pq.isEmpty());
+        }
+        for (PriorityQueue<Integer> pq : adventurer.getBackpack().getFoods().values()) {
+            assertTrue(pq.isEmpty());
+        }
+        assertTrue(adventurer.getBackpack().getEquipments().isEmpty());
+
+        adventurer.fetchBottle(1111);
+        adventurer.useBottle("BotBuy");
+        assertEquals(632, adventurer.getPower());
+
+        adventurer.sellAll();
+        assertEquals(2147483649L, adventurer.getMoney());
+
+        adventurer.buyThing(4444, "BotBuy", "ReinforcedBottle", "0.321");
+        adventurer.buyThing(5555, "BotBuy", "RecoverBottle", "0.321");
+        adventurer.buyThing(6666, "BotBuy", "RegularBottle", null);
+        assertEquals(2, adventurer.getBottles().size());
+        assertEquals(1, adventurer.getMoney());
+
+        adventurer.obtainFood(11111, new Food(11111, "Food", 100, 40000));
+        adventurer.dropFood(11111);  // 40001
+
+        adventurer.buyThing(7777, "EquBuy", "RegularEquipment", null);  // 12345
+        adventurer.buyThing(8888, "EquBuy", "CritEquipment", "3214");
+        adventurer.buyThing(9999, "EquBuy", "EpicEquipment", "0.987");
+        adventurer.buyThing(9999, "EquBuy", "EpicEquipment", "0.987");
+        assertEquals(4, adventurer.getEquipments().size());
+
+        adventurer.buyThing(111111, "FoodBuy", "Food", null);
+        adventurer.buyThing(111111, "FoodBuy", "Food", null);
+
+        adventurer.buyThing(11, "E", "Equipment", null);
+        adventurer.buyThing(12, "B", "Bottle", null);
+        adventurer.buyThing(13, "F", "Foods", null);
+    }
+
+    @Test
+    public void getAttribute() {
+        assertEquals(0, adventurer.getAttribute());
+    }
+
+    @Test
+    public void helpTest() {
+        Adventurer adv1 = new Adventurer(1001, "other1");
+        Adventurer adv2 = new Adventurer(1002, "other2");
+        adventurer.hireAdventurer(adv1);
+        adv1.obtainFood(111111, new Food(111111, "Food", 10, 11111));
+        adv2.obtainFood(222222, new Food(222222, "Food", 10, 222222222));
+        adventurer.hireAdventurer(adv2);
+        adv1.hireAdventurer(adv2);
+
+        adv1.dropFood(111111);
+        adv2.dropFood(222222);
+
+        adventurer.enterFightMode();
+        adv1.enterFightMode();
+        adv2.enterFightMode();
+        adventurer.beAttacked(250, null);  // Need: 2500000
+        adventurer.leaveFightMode();
+        adv1.leaveFightMode();
+        adv2.leaveFightMode();
+
+        assertEquals(2511111, adventurer.getMoney());
+        assertEquals(0, adv1.getMoney());
+        assertEquals(219722222, adv2.getMoney());
+
+        adv1.enterFightMode();
+        adventurer.enterFightMode();
+        adv2.enterFightMode();
+        adv1.beAttacked(300, null);
+        adventurer.beAttacked(200, null);
+        adv1.leaveFightMode();
+        adventurer.leaveFightMode();
+        adv2.leaveFightMode();
+
+        assertEquals(1000000, adv1.getMoney());
     }
 }

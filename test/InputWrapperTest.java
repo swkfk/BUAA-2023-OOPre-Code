@@ -13,5 +13,6 @@ public class InputWrapperTest {
         assertEquals(10, wrapper.getInt(1));
         assertEquals(2147483648L, wrapper.getLong(2));
         assertEquals(3.14159, wrapper.getDouble(3), 0.000000001);
+        assertNull(wrapper.get(4));
     }
 }

@@ -19,6 +19,10 @@ public class SingletonShop {
         return instance;
     }
 
+    public static void clear() {
+        instance = null;
+    }
+
     public long stockBottle(Bottle bottle) {
         botLog.update(bottle);
         return bottle.getCommodity();

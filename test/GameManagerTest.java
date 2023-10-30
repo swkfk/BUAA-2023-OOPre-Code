@@ -377,4 +377,46 @@ public class GameManagerTest {
         GameMgr.update(new ArrayList<>(Arrays.asList("20", "1002")));
         GameMgr.update(new ArrayList<>(Arrays.asList("21", "1001", "1103")));
     }
+
+    @Test
+    public void buyThingTest() {
+        SingletonShop.clear();
+        GameMgr.update(new ArrayList<>(Arrays.asList("1", "1001", "Adv1")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("1", "1002", "Adv2")));
+
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "1101", "Bot01", "101", "101", "RegularBottle")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "1102", "Bot02", "101", "102", "ReinforcedBottle", "0.3")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("2", "1001", "1103", "Bot03", "100", "103", "RecoverBottle", "0.8")));
+
+        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1001", "1201", "Equ01", "110", "101", "RegularEquipment")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1001", "1202", "Equ02", "120", "102", "EpicEquipment", "0.3")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("4", "1001", "1203", "Equ03", "110", "103", "CritEquipment", "80")));
+
+        GameMgr.update(new ArrayList<>(Arrays.asList("10", "1001", "1101")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("3", "1001", "1101")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("10", "1001", "1102")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("10", "1001", "1102")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("10", "1001", "1103")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("22", "1001")));
+
+        GameMgr.update(new ArrayList<>(Arrays.asList("23", "1001", "2101", "BotBuy", "RegularBottle")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("23", "1002", "2102", "BotBuy", "RegularBottle")));
+
+        assertEquals(100, GameMgr.getAdventurers().get(1001).getBottles().get(2101).getCapacity());
+        assertEquals("RegularBottle", GameMgr.getAdventurers().get(1001).getBottles().get(2101).getBelonging());
+
+        GameMgr.update(new ArrayList<>(Arrays.asList("9", "1001", "1201")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("9", "1001", "1202")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("9", "1001", "1203")));
+
+        GameMgr.update(new ArrayList<>(Arrays.asList("7", "1001", "1301", "Food", "211", "100")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("8", "1001", "1301")));
+        GameMgr.update(new ArrayList<>(Arrays.asList("22", "1001")));
+
+        assertEquals(1, GameMgr.getAdventurers().get(1001).countCommodity());
+
+        GameMgr.update(new ArrayList<>(Arrays.asList("23", "1001", "3101", "EquBuy", "EpicEquipment", "0.123")));
+        assertEquals(113, GameMgr.getAdventurers().get(1001).getEquipments().get(3101).getStar());
+
+    }
 }
